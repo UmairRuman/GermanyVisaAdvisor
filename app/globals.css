@@ -1,0 +1,211 @@
+@import "tailwindcss";
+
+@theme {
+  /* Warm, paper-based light theme — see docs/02-design-direction.md */
+  --color-paper: #faf7f1;
+  --color-paper-raised: #ffffff;
+  --color-ink: #1a1613;
+  --color-ink-muted: #6b6058;
+  --color-line: #e7e0d6;
+
+  --color-brick: #b3241c;
+  --color-brick-dark: #8f1d17;
+  --color-gold: #b98a2e;
+
+  --color-charcoal: #171310;
+  --color-charcoal-line: #2a2520;
+
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+
+  --ease-settle: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ---------- Motion primitives ---------- */
+
+/* Infinite marquee — the track holds two identical copies, so -50% loops seamlessly. */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  animation: marquee var(--marquee-duration, 40s) linear infinite;
+}
+.marquee-reverse {
+  animation-direction: reverse;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Slow, drifting aurora blobs behind hero / CTA sections. */
+@keyframes aurora-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(6%, 8%, 0) scale(1.15);
+  }
+}
+@keyframes aurora-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1.1);
+  }
+  50% {
+    transform: translate3d(-8%, -6%, 0) scale(0.95);
+  }
+}
+.aurora-a {
+  animation: aurora-a 16s ease-in-out infinite;
+}
+.aurora-b {
+  animation: aurora-b 20s ease-in-out infinite;
+}
+
+/* Gentle idle float for floating chips / badges. */
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+.float-y {
+  animation: float-y var(--float-duration, 6s) ease-in-out infinite;
+  animation-delay: var(--float-delay, 0s);
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spin-slow {
+  animation: spin-slow 22s linear infinite;
+}
+
+/* Expanding ring for map pins / live indicators. */
+@keyframes ping-ring {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+.ping-ring {
+  animation: ping-ring 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+/* Diagonal light sweep across a button/card on hover. */
+.shine {
+  position: relative;
+  overflow: hidden;
+}
+.shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.35) 50%, transparent 65%);
+  transform: translateX(-120%);
+  transition: transform 0.9s var(--ease-settle);
+  pointer-events: none;
+}
+.shine:hover::after {
+  transform: translateX(120%);
+}
+
+/* Autoplay progress for carousels; restarts when the keyed element remounts. */
+@keyframes progress-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Mouse-follow spotlight — --mx/--my are set from JS without re-rendering. */
+.spotlight {
+  position: relative;
+}
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    var(--spotlight-color, rgba(179, 36, 28, 0.10)),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-settle);
+  pointer-events: none;
+}
+.spotlight:hover::before {
+  opacity: 1;
+}
+
+.text-outline {
+  -webkit-text-stroke: 1.5px currentColor;
+  color: transparent;
+}
+
+.dot-grid {
+  background-image: radial-gradient(currentColor 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+::selection {
+  background: var(--color-brick);
+  color: var(--color-paper);
+}
+
+/* A two-tone ring (light + dark) rather than a single outline color, so focus stays
+   visible at WCAG's 3:1 non-text-contrast minimum whether the element sits on a light
+   section or a charcoal one (a single brick outline fails ~2.8:1 on charcoal). */
+:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 3px var(--color-paper),
+    0 0 0 5px var(--color-charcoal);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .marquee-track,
+  .aurora-a,
+  .aurora-b,
+  .float-y,
+  .spin-slow,
+  .ping-ring {
+    animation: none !important;
+  }
+}

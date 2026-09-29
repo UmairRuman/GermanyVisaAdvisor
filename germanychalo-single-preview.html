@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GermanyChalo — Interactive Front-End Preview</title>
+<style>
+:root{
+  --red:#dd0000;--gold:#ffcc00;--ink:#111;--muted:#667085;--soft:#f7f7f8;--line:#e7e7ea;
+  --white:#fff;--green:#25d366;--shadow:0 18px 55px rgba(17,17,17,.10)
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:#fff;line-height:1.55}
+a{text-decoration:none;color:inherit}
+button,input,select,textarea{font:inherit}
+.container{width:min(1180px,calc(100% - 40px));margin:auto}
+.topbar{height:5px;background:linear-gradient(90deg,#111 0 33.33%,#dd0000 33.33% 66.66%,#ffcc00 66.66%)}
+header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.94);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,0,0,.06)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 0}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:21px;cursor:pointer}
+.brandmark{width:38px;height:38px;border-radius:12px;background:linear-gradient(180deg,#111 0 33%,#dd0000 33% 66%,#ffcc00 66%);box-shadow:0 8px 20px rgba(0,0,0,.16)}
+.brand span{color:var(--red)}
+.navlinks{display:flex;align-items:center;gap:18px;font-size:13px;font-weight:800}
+.navlinks button{border:0;background:none;cursor:pointer;padding:6px 0;color:#111;opacity:.7;font-weight:800}
+.navlinks button:hover,.navlinks button.active{color:var(--red);opacity:1}
+.navcta{border:0;background:var(--red);color:#fff;padding:11px 15px;border-radius:12px;font-size:13px;font-weight:900;cursor:pointer}
+.menu{display:none;border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 11px;font-size:21px;cursor:pointer}
+.mobile-menu{display:none;background:#fff;border-top:1px solid var(--line)}
+.mobile-menu.open{display:block}
+.mobile-menu button{display:block;width:100%;text-align:left;border:0;background:#fff;padding:14px 20px;font-weight:800;border-bottom:1px solid #f1f1f1}
+.page{display:none}
+.page.active{display:block}
+.hero{padding:70px 0 50px;background:radial-gradient(circle at 80% 24%,rgba(255,204,0,.18),transparent 24%),radial-gradient(circle at 82% 56%,rgba(221,0,0,.10),transparent 28%),linear-gradient(#fff,#fcfcfc)}
+.hero-grid{display:grid;grid-template-columns:1.03fr .97fr;gap:46px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;padding:8px 12px;border-radius:999px;font-size:13px;font-weight:900}
+.hero h1,.page-hero h1{font-size:clamp(44px,6vw,78px);line-height:.98;margin:18px 0;letter-spacing:-3.5px}
+.red{color:var(--red)}.gold{color:#d7a900}
+.lead{font-size:18px;color:#4e525a;max-width:650px}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin:28px 0 18px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:14px 18px;border-radius:13px;font-weight:900;border:1px solid var(--line);cursor:pointer}
+.btn-primary{background:var(--red);color:#fff;border-color:var(--red);box-shadow:0 10px 28px rgba(221,0,0,.2)}
+.btn-secondary{background:#fff;color:#111}.btn-dark{background:#111;color:#fff;border-color:#111}.btn-whatsapp{background:#fff;color:#11783b;border-color:#cdf1d8}
+.trust{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;font-weight:850;color:#444}
+.hero-visual{min-height:500px;border-radius:30px;overflow:hidden;box-shadow:var(--shadow);position:relative;background:linear-gradient(180deg,rgba(0,0,0,0) 44%,rgba(0,0,0,.60)),url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1400&q=85') center/cover}
+.hero-card{position:absolute;right:22px;bottom:22px;background:rgba(255,255,255,.96);padding:18px 20px;border-radius:18px;max-width:270px}
+.flagline{height:5px;width:86px;border-radius:999px;background:linear-gradient(90deg,#111 0 33%,#dd0000 33% 66%,#ffcc00 66%)}
+section{padding:82px 0}
+.section-head{text-align:center;max-width:760px;margin:0 auto 34px}
+.section-head h2{font-size:clamp(32px,4vw,50px);line-height:1.06;letter-spacing:-2px;margin:0 0 10px}
+.section-head p{color:var(--muted);font-size:17px;margin:0}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.card{border:1px solid var(--line);border-radius:20px;background:#fff;padding:24px;transition:.25s}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.card h3{margin:0 0 8px;font-size:20px}.card p{margin:0;color:var(--muted)}
+.number{width:40px;height:40px;border-radius:11px;background:#111;color:#fff;display:grid;place-items:center;font-weight:900;margin-bottom:18px}
+.icon{width:46px;height:46px;border-radius:14px;background:#fff4f4;color:var(--red);display:grid;place-items:center;font-weight:900;margin-bottom:17px}
+.dark-band{background:#111;color:#fff;padding:70px 0;position:relative;overflow:hidden}
+.dark-band:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(17,17,17,.96),rgba(17,17,17,.72)),url('https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=1600&q=80') center/cover}
+.dark-inner{position:relative;display:flex;justify-content:space-between;align-items:center;gap:35px}
+.dark-inner h2{font-size:clamp(34px,5vw,56px);line-height:1;margin:0 0 14px;letter-spacing:-2px}
+.soft{background:var(--soft)}
+.story{border:1px solid var(--line);border-radius:20px;overflow:hidden;background:#fff}
+.story-img{height:230px;background-size:cover;background-position:center;position:relative}
+.badge{position:absolute;left:14px;top:14px;background:#111;color:#fff;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:900}
+.story-body{padding:20px}.story-body h3{margin:0 0 5px}.meta{color:var(--muted);font-size:14px}
+.center{display:flex;justify-content:center;margin-top:28px}
+.assessment{display:grid;grid-template-columns:.86fr 1.14fr;border:1px solid var(--line);border-radius:28px;overflow:hidden;box-shadow:var(--shadow)}
+.assessment-image{min-height:520px;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.5)),url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=85') center/cover;position:relative}
+.caption{position:absolute;left:28px;bottom:28px;color:#fff;max-width:360px}
+.assessment-form{padding:36px}.kicker{color:var(--red);font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.assessment-form h2{font-size:40px;line-height:1.05;letter-spacing:-1.7px;margin:8px 0}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+.field label{display:block;font-size:12px;font-weight:900;margin-bottom:7px}
+.field input,.field select,.field textarea{width:100%;padding:14px;border:1px solid #ddd;border-radius:12px;background:#fff}
+.full{grid-column:1/-1}
+.page-hero{padding:66px 0;background:linear-gradient(#fff,#f8f8f8);text-align:center}
+.page-hero .lead{margin:auto}
+.feature-list{display:grid;gap:14px}
+.feature{display:flex;gap:16px;align-items:flex-start;padding:20px;border:1px solid var(--line);border-radius:16px;background:#fff}
+.feature b{display:block;margin-bottom:4px}
+.table-like{display:grid;gap:12px}
+.row{display:grid;grid-template-columns:1.1fr .8fr .8fr .7fr auto;gap:14px;align-items:center;border:1px solid var(--line);border-radius:16px;padding:18px;background:#fff}
+.pill{display:inline-flex;padding:7px 10px;border-radius:999px;background:#f3f3f3;font-size:12px;font-weight:800}
+.resources{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.resource-card{padding:24px;border:1px solid var(--line);border-radius:18px;background:#fff}
+.resource-card h3{margin:10px 0 8px}
+details{border-bottom:1px solid var(--line);padding:18px 4px}
+summary{cursor:pointer;list-style:none;font-weight:900;display:flex;justify-content:space-between}
+summary::-webkit-details-marker{display:none}
+details p{color:var(--muted)}
+.contact-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:20px}
+.contact-card{border:1px solid var(--line);border-radius:20px;padding:24px;background:#fff}
+.note{background:#fff8dc;border:1px solid #ffe28a;padding:16px;border-radius:14px;color:#6d5600;font-size:14px}
+.visa-wall{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.visa-card{border:1px solid var(--line);border-radius:18px;padding:16px;background:#fff}
+.visa-doc{height:180px;border-radius:14px;border:1px dashed #bbb;background:linear-gradient(135deg,#f2f2f2,#fff);display:grid;place-items:center}
+.visa-doc:before{content:"REDACTED VISA PROOF";font-size:11px;font-weight:900;letter-spacing:.12em;color:#8a8a8a;transform:rotate(-8deg)}
+.final-cta{background:#111;color:#fff;padding:72px 0}
+.final-wrap{display:flex;justify-content:space-between;gap:28px;align-items:center}
+.final-wrap h2{font-size:clamp(36px,5vw,56px);line-height:1;margin:0 0 12px}
+footer{background:#0b0b0b;color:#aaa;padding:25px 0;border-top:1px solid #222}
+.footer-inner{display:flex;justify-content:space-between;gap:18px;align-items:center;font-size:13px}
+.whatsapp-float{position:fixed;right:20px;bottom:20px;z-index:70;width:58px;height:58px;border-radius:50%;border:0;display:grid;place-items:center;background:var(--green);color:#fff;font-weight:900;box-shadow:0 14px 36px rgba(37,211,102,.35);cursor:pointer}
+@media(max-width:1000px){
+  .navlinks{display:none}.menu{display:block}.navcta{display:none}
+  .hero-grid,.assessment,.contact-grid{grid-template-columns:1fr}
+  .grid-4{grid-template-columns:repeat(2,1fr)}.grid-3,.resources{grid-template-columns:repeat(2,1fr)}
+  .row{grid-template-columns:1fr 1fr}.visa-wall{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:700px){
+  .container{width:min(100% - 24px,1180px)}section{padding:62px 0}
+  .grid-4,.grid-3,.grid-2,.resources,.visa-wall{grid-template-columns:1fr}
+  .form-grid{grid-template-columns:1fr}.full{grid-column:auto}
+  .dark-inner,.final-wrap{flex-direction:column;align-items:flex-start}
+  .hero-visual{min-height:350px}.assessment-image{min-height:330px}.assessment-form{padding:24px}
+  .row{grid-template-columns:1fr}.footer-inner{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+<div class="topbar"></div>
+<header>
+  <div class="container nav">
+    <div class="brand" data-page="home"><div class="brandmark"></div><div>Germany<span>Chalo</span></div></div>
+    <nav class="navlinks">
+      <button data-page="home" class="active">Home</button>
+      <button data-page="study">Study in Germany</button>
+      <button data-page="services">Services</button>
+      <button data-page="universities">Universities</button>
+      <button data-page="success">Success Stories</button>
+      <button data-page="resources">Resources</button>
+      <button data-page="about">About</button>
+      <button data-page="contact">Contact</button>
+    </nav>
+    <button class="navcta" data-page="contact">Free Assessment →</button>
+    <button class="menu" id="menuBtn">☰</button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <button data-page="home">Home</button>
+    <button data-page="study">Study in Germany</button>
+    <button data-page="services">Services</button>
+    <button data-page="universities">Universities</button>
+    <button data-page="success">Success Stories</button>
+    <button data-page="resources">Resources</button>
+    <button data-page="about">About</button>
+    <button data-page="contact">Contact / Free Assessment</button>
+  </div>
+</header>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+<section class="hero">
+<div class="container hero-grid">
+  <div>
+    <div class="eyebrow">🇩🇪 Your Germany Journey Starts Here</div>
+    <h1>Study in <span class="red">Germany.</span><br>We Make the Journey Easier.</h1>
+    <p class="lead">From university admission to visa guidance — get the support you need to move forward with confidence.</p>
+    <div class="actions">
+      <button class="btn btn-primary" data-page="contact">Get Free Assessment →</button>
+      <button class="btn btn-whatsapp" data-page="contact">💬 Talk on WhatsApp</button>
+    </div>
+    <div class="trust"><span>🎓 Admission Guidance</span><span>📄 Visa Support</span><span>🇩🇪 Germany Focused</span></div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-card"><div class="flagline"></div><h3 style="margin:12px 0 6px">From Admission to Arrival.</h3><p style="margin:0;color:#666;font-size:14px">Simple guidance for your Germany journey.</p></div>
+  </div>
+</div>
+</section>
+
+<section>
+<div class="container">
+  <div class="section-head"><h2>Your Germany Journey Starts Here</h2><p>A simple path. A brighter future.</p></div>
+  <div class="grid-4">
+    <div class="card"><div class="number">01</div><h3>Find Your Program</h3><p>Choose the right university and course.</p></div>
+    <div class="card"><div class="number">02</div><h3>Apply Successfully</h3><p>Get support with your application.</p></div>
+    <div class="card"><div class="number">03</div><h3>Prepare Your Visa</h3><p>Understand every visa step clearly.</p></div>
+    <div class="card"><div class="number">04</div><h3>Fly to Germany 🇩🇪</h3><p>Get ready for your new journey.</p></div>
+  </div>
+  <div class="center"><button class="btn btn-secondary" data-page="study">Explore Study in Germany →</button></div>
+</div>
+</section>
+
+<section class="dark-band">
+<div class="container dark-inner">
+  <div><h2>Germany is <span class="gold">closer</span><br>than you think.</h2><p style="color:#d7d7d7;max-width:600px">Your plan becomes easier when you know the right next step.</p></div>
+  <button class="btn btn-primary" data-page="contact">Check My Profile →</button>
+</div>
+</section>
+
+<section>
+<div class="container">
+  <div class="section-head"><h2>How We Can <span class="red">Help</span></h2><p>A quick overview. Full details stay on the Services page.</p></div>
+  <div class="grid-3">
+    <div class="card"><div class="icon">🎓</div><h3>University Guidance</h3><p>Find programs that match your profile.</p></div>
+    <div class="card"><div class="icon">🛂</div><h3>Visa Guidance</h3><p>Understand documents and next steps clearly.</p></div>
+    <div class="card"><div class="icon">✈️</div><h3>Pre-Departure Support</h3><p>Prepare before you travel to Germany.</p></div>
+  </div>
+  <div class="center"><button class="btn btn-primary" data-page="services">Explore All Services →</button></div>
+</div>
+</section>
+
+<section class="soft">
+<div class="container">
+  <div class="section-head"><h2>Student <span class="red">Success Stories</span></h2><p>A small homepage preview. Complete journeys and visa proofs stay on their own page.</p></div>
+  <div class="grid-2">
+    <article class="story">
+      <div class="story-img" style="background-image:url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=85')"><div class="badge">VISA APPROVED 🇩🇪</div></div>
+      <div class="story-body"><h3>Ahmed R.</h3><div class="meta">MSc Computer Science · Germany</div></div>
+    </article>
+    <article class="story">
+      <div class="story-img" style="background-image:url('https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=900&q=85')"><div class="badge">ADMISSION + VISA</div></div>
+      <div class="story-body"><h3>Areeba S.</h3><div class="meta">MSc Engineering · Germany</div></div>
+    </article>
+  </div>
+  <div class="center"><button class="btn btn-primary" data-page="success">View All Success Stories →</button></div>
+</div>
+</section>
+
+<section>
+<div class="container">
+  <div class="assessment">
+    <div class="assessment-image"><div class="caption"><div class="flagline"></div><h2 style="font-size:38px;margin:14px 0 6px">Not sure where you stand?</h2><p style="margin:0;color:#eee">Start with a simple profile assessment.</p></div></div>
+    <div class="assessment-form">
+      <div class="kicker">Free Profile Evaluation</div>
+      <h2>Tell us your profile.</h2>
+      <p style="color:var(--muted)">We’ll help you understand your next step.</p>
+      <div class="form-grid">
+        <div class="field"><label>Name</label><input placeholder="Your name"></div>
+        <div class="field"><label>Qualification</label><input placeholder="e.g. Bachelor's"></div>
+        <div class="field"><label>Field of Study</label><input placeholder="e.g. Computer Science"></div>
+        <div class="field"><label>CGPA / Percentage</label><input placeholder="e.g. 3.2 / 75%"></div>
+        <div class="field"><label>Desired Degree</label><select><option>Select</option><option>Bachelor</option><option>Master</option><option>PhD</option></select></div>
+        <div class="field"><label>WhatsApp Number</label><input placeholder="+92 ..."></div>
+        <div class="full"><button class="btn btn-primary" style="width:100%" data-page="contact">Check My Profile →</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+</div>
+
+<!-- STUDY -->
+<div class="page" id="page-study">
+<section class="page-hero"><div class="container"><div class="eyebrow">Study in Germany</div><h1>Germany Could Be<br><span class="red">Your Next Classroom.</span></h1><p class="lead">Simple information about degrees, universities, intakes, costs and student life.</p></div></section>
+<section><div class="container">
+<div class="section-head"><h2>Why Study in Germany?</h2><p>Strong universities, international programs and a global student environment.</p></div>
+<div class="grid-3">
+<div class="card"><div class="icon">🎓</div><h3>Quality Education</h3><p>Study at internationally recognized universities and institutions.</p></div>
+<div class="card"><div class="icon">🌍</div><h3>International Programs</h3><p>Many programs are available in English, especially at Master’s level.</p></div>
+<div class="card"><div class="icon">💼</div><h3>Career Exposure</h3><p>Build international academic and professional experience.</p></div>
+</div>
+</div></section>
+<section class="soft"><div class="container">
+<div class="section-head"><h2>Choose Your Study Path</h2><p>Understand the route that fits your academic background.</p></div>
+<div class="grid-3">
+<div class="card"><h3>Bachelor's</h3><p>For students starting undergraduate study in Germany.</p></div>
+<div class="card"><h3>Master's</h3><p>For graduates looking for specialized study and research options.</p></div>
+<div class="card"><h3>PhD</h3><p>For research-focused students seeking doctoral opportunities.</p></div>
+</div>
+</div></section>
+<section><div class="container">
+<div class="section-head"><h2>What You Should Understand</h2><p>Keep these key areas clear before you apply.</p></div>
+<div class="feature-list">
+<div class="feature"><div class="icon">🏫</div><div><b>Public vs Private Universities</b><span class="meta">Know the differences in fees, admission models and program structure.</span></div></div>
+<div class="feature"><div class="icon">🗓️</div><div><b>Intakes & Deadlines</b><span class="meta">Plan around winter or summer intake depending on the program.</span></div></div>
+<div class="feature"><div class="icon">🗣️</div><div><b>Language Requirements</b><span class="meta">Requirements can include English or German language proof.</span></div></div>
+<div class="feature"><div class="icon">💶</div><div><b>Costs & Budgeting</b><span class="meta">Plan for semester contribution, living costs, insurance and travel.</span></div></div>
+<div class="feature"><div class="icon">🏠</div><div><b>Student Life & Accommodation</b><span class="meta">Prepare early for housing and your first weeks in Germany.</span></div></div>
+</div>
+</div></section>
+</div>
+
+<!-- SERVICES -->
+<div class="page" id="page-services">
+<section class="page-hero"><div class="container"><div class="eyebrow">Our Services</div><h1>Guidance for Every<br><span class="red">Important Step.</span></h1><p class="lead">Clear support from program selection to your move to Germany.</p></div></section>
+<section><div class="container"><div class="grid-3">
+<div class="card"><div class="icon">🎓</div><h3>University Shortlisting</h3><p>Find universities and programs that fit your profile.</p></div>
+<div class="card"><div class="icon">📑</div><h3>Application Guidance</h3><p>Understand documents, deadlines and application steps.</p></div>
+<div class="card"><div class="icon">📝</div><h3>Document Review</h3><p>Organize your documents before submission.</p></div>
+<div class="card"><div class="icon">🛂</div><h3>Visa Guidance</h3><p>Understand required documents and the visa process.</p></div>
+<div class="card"><div class="icon">💶</div><h3>Blocked Account Guidance</h3><p>Understand financial proof and blocked-account steps.</p></div>
+<div class="card"><div class="icon">🩺</div><h3>Health Insurance Guidance</h3><p>Know what type of insurance may be needed.</p></div>
+<div class="card"><div class="icon">🏠</div><h3>Accommodation Guidance</h3><p>Learn where and how to search for student housing.</p></div>
+<div class="card"><div class="icon">✈️</div><h3>Pre-Departure Support</h3><p>Prepare important tasks before travelling.</p></div>
+<div class="card"><div class="icon">🤝</div><h3>Arrival Guidance</h3><p>Understand common first steps after reaching Germany.</p></div>
+</div></div></section>
+</div>
+
+<!-- UNIVERSITIES -->
+<div class="page" id="page-universities">
+<section class="page-hero"><div class="container"><div class="eyebrow">Universities</div><h1>Find Your Place<br><span class="red">in Germany.</span></h1><p class="lead">A simple university discovery page for programs, cities, languages and intakes.</p></div></section>
+<section><div class="container">
+<div class="card" style="padding:20px;margin-bottom:24px"><div class="form-grid" style="margin:0">
+<div class="field"><label>Search University</label><input placeholder="University or city"></div>
+<div class="field"><label>Degree</label><select><option>All degrees</option><option>Bachelor</option><option>Master</option><option>PhD</option></select></div>
+</div></div>
+<div class="table-like">
+<div class="row"><div><b>Technical University Example</b><div class="meta">Darmstadt</div></div><div><span class="pill">Public</span></div><div>English / German</div><div>Winter</div><button class="btn btn-secondary" data-page="contact">Explore →</button></div>
+<div class="row"><div><b>University of Example</b><div class="meta">Berlin</div></div><div><span class="pill">Public</span></div><div>English</div><div>Winter / Summer</div><button class="btn btn-secondary" data-page="contact">Explore →</button></div>
+<div class="row"><div><b>Applied Sciences Example</b><div class="meta">Munich</div></div><div><span class="pill">Public</span></div><div>German / English</div><div>Winter</div><button class="btn btn-secondary" data-page="contact">Explore →</button></div>
+</div>
+<div class="note" style="margin-top:22px">This is front-end demo content. Real university data can be connected later.</div>
+</div></section>
+</div>
+
+<!-- SUCCESS -->
+<div class="page" id="page-success">
+<section class="page-hero"><div class="container"><div class="eyebrow">Success Stories 🇩🇪</div><h1>Dreams Become<br><span class="red">Success Stories.</span></h1><p class="lead">Student journeys, admission outcomes and redacted visa approvals in one place.</p></div></section>
+<section><div class="container">
+<div class="grid-3">
+<article class="story"><div class="story-img" style="background-image:url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=85')"><div class="badge">VISA APPROVED 🇩🇪</div></div><div class="story-body"><h3>Muhammad Ahmed</h3><div class="meta">MSc Computer Science · Winter Intake</div><p>Admission secured → Visa prepared → Germany visa approved.</p></div></article>
+<article class="story"><div class="story-img" style="background-image:url('https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=900&q=85')"><div class="badge">ADMISSION + VISA</div></div><div class="story-body"><h3>Areeba S.</h3><div class="meta">MSc Engineering · Germany</div><p>Program selection → Application support → Visa approved.</p></div></article>
+<article class="story"><div class="story-img" style="background-image:url('https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=900&q=85')"><div class="badge">SUCCESS STORY</div></div><div class="story-body"><h3>Hamza K.</h3><div class="meta">MSc Data Science · Germany</div><p>University shortlisting → Documents prepared → Pre-departure ready.</p></div></article>
+</div>
+</div></section>
+<section class="soft"><div class="container">
+<div class="section-head"><h2>Visa Wall 🇩🇪</h2><p>Redacted visa proofs can be uploaded here after student permission.</p></div>
+<div class="note"><b>Privacy first:</b> Blur passport number, visa number, DOB, address, MRZ lines and other sensitive details before publishing.</div>
+<div class="visa-wall" style="margin-top:22px">
+<div class="visa-card"><div class="visa-doc"></div><h4>M.A. — MSc Computer Science</h4><div class="meta">Visa Approved</div></div>
+<div class="visa-card"><div class="visa-doc"></div><h4>A.S. — MSc Engineering</h4><div class="meta">Visa Approved</div></div>
+<div class="visa-card"><div class="visa-doc"></div><h4>H.K. — MSc Data Science</h4><div class="meta">Visa Approved</div></div>
+<div class="visa-card"><div class="visa-doc"></div><h4>S.R. — MSc Business</h4><div class="meta">Visa Approved</div></div>
+</div>
+</div></section>
+</div>
+
+<!-- RESOURCES -->
+<div class="page" id="page-resources">
+<section class="page-hero"><div class="container"><div class="eyebrow">Resources</div><h1>Germany Made<br><span class="red">Easier to Understand.</span></h1><p class="lead">Short guides, checklists and common questions for students.</p></div></section>
+<section><div class="container"><div class="resources">
+<div class="resource-card"><div class="icon">📋</div><h3>Student Visa Checklist</h3><p class="meta">A simple overview of common visa preparation items.</p></div>
+<div class="resource-card"><div class="icon">💶</div><h3>Blocked Account Guide</h3><p class="meta">Understand financial proof and preparation.</p></div>
+<div class="resource-card"><div class="icon">🗓️</div><h3>Germany Intake Guide</h3><p class="meta">Understand winter and summer intake planning.</p></div>
+<div class="resource-card"><div class="icon">🗣️</div><h3>Language Requirements</h3><p class="meta">Learn how language requirements differ by program.</p></div>
+<div class="resource-card"><div class="icon">🏠</div><h3>Accommodation Guide</h3><p class="meta">Know where students commonly search for housing.</p></div>
+<div class="resource-card"><div class="icon">✈️</div><h3>Before You Fly</h3><p class="meta">A pre-departure checklist for your first days in Germany.</p></div>
+</div></div></section>
+<section class="soft"><div class="container">
+<div class="section-head"><h2>Frequently Asked Questions</h2><p>Useful answers stay here instead of crowding the homepage.</p></div>
+<div style="max-width:900px;margin:auto">
+<details><summary>Can I study in Germany with a low CGPA?<span>＋</span></summary><p>It depends on the university and program. Suitable shortlisting and overall profile matter.</p></details>
+<details><summary>Do I need IELTS?<span>＋</span></summary><p>Requirements vary. Some English-taught programs require IELTS or another accepted proof of English.</p></details>
+<details><summary>Can I study in Germany for free?<span>＋</span></summary><p>Many public universities have low or no tuition for many programs, but semester contributions and living costs still apply.</p></details>
+<details><summary>How much money do I need?<span>＋</span></summary><p>Plan for financial proof, fees, insurance, housing, travel and setup costs.</p></details>
+<details><summary>How long does the visa process take?<span>＋</span></summary><p>Processing times vary. Check current official embassy guidance for the latest information.</p></details>
+</div>
+</div></section>
+</div>
+
+<!-- ABOUT -->
+<div class="page" id="page-about">
+<section class="page-hero"><div class="container"><div class="eyebrow">About Germany Chalo</div><h1>We Make the Journey<br><span class="red">Clearer.</span></h1><p class="lead">Germany Chalo helps students understand what comes next — without unnecessary confusion.</p></div></section>
+<section><div class="container"><div class="grid-2">
+<div class="card"><div class="kicker">Our Mission</div><h2 style="font-size:38px;margin:8px 0">Make studying in Germany easier to understand and easier to start.</h2><p>Clear information. Practical guidance. Simple next steps.</p></div>
+<div class="card"><div class="kicker">Our Approach</div><div class="feature-list" style="margin-top:14px">
+<div class="feature"><div class="icon">🛡️</div><div><b>Clear Guidance</b><span class="meta">No confusing information.</span></div></div>
+<div class="feature"><div class="icon">👥</div><div><b>Student Focused</b><span class="meta">Your goals come first.</span></div></div>
+<div class="feature"><div class="icon">🤝</div><div><b>Transparent Process</b><span class="meta">Know what happens next.</span></div></div>
+</div></div>
+</div></div></section>
+</div>
+
+<!-- CONTACT -->
+<div class="page" id="page-contact">
+<section class="page-hero"><div class="container"><div class="eyebrow">Contact</div><h1>Let's Talk About<br><span class="red">Your Germany Plan.</span></h1><p class="lead">Send your basic profile and start with a clear next step.</p></div></section>
+<section><div class="container"><div class="contact-grid">
+<div>
+<div class="contact-card"><div class="icon">💬</div><h3>WhatsApp</h3><p>Fastest way to start a conversation.</p><button class="btn btn-whatsapp">Open WhatsApp</button></div>
+<div class="contact-card" style="margin-top:16px"><div class="icon">✉️</div><h3>Email</h3><p>hello@germanychalo.com</p></div>
+<div class="contact-card" style="margin-top:16px"><div class="icon">📍</div><h3>Office</h3><p>Add your office address here when ready.</p></div>
+</div>
+<div class="contact-card">
+<div class="kicker">Free Profile Evaluation</div><h2 style="font-size:40px;margin:8px 0">Tell us about yourself.</h2>
+<div class="form-grid">
+<div class="field"><label>Name</label><input placeholder="Your name"></div>
+<div class="field"><label>WhatsApp</label><input placeholder="+92 ..."></div>
+<div class="field"><label>Qualification</label><input placeholder="e.g. BS Physics"></div>
+<div class="field"><label>CGPA / Percentage</label><input placeholder="e.g. 3.2 / 75%"></div>
+<div class="field"><label>Desired Degree</label><select><option>Master</option><option>Bachelor</option><option>PhD</option></select></div>
+<div class="field"><label>Field of Study</label><input placeholder="e.g. Computer Science"></div>
+<div class="field full"><label>Message</label><textarea rows="5" placeholder="Tell us what you need help with"></textarea></div>
+<div class="full"><button class="btn btn-primary" style="width:100%">Submit My Profile →</button></div>
+</div>
+<p class="meta" style="text-align:center;margin-top:12px">🔒 Your information stays private.</p>
+</div>
+</div></div></section>
+</div>
+
+<section class="final-cta">
+  <div class="container final-wrap">
+    <div><div class="flagline"></div><h2>Your Germany Journey Can Start Today.</h2><p style="color:#ccc">One clear conversation can help you understand your next step.</p></div>
+    <div class="actions"><button class="btn btn-primary" data-page="contact">Get Free Assessment</button><button class="btn btn-secondary" data-page="contact">💬 WhatsApp Us</button></div>
+  </div>
+</section>
+<footer><div class="container footer-inner"><div><b style="color:#fff">GermanyChalo.com 🇩🇪</b> — From Admission to Arrival.</div><div>Interactive front-end preview</div></div></footer>
+<button class="whatsapp-float" data-page="contact">WA</button>
+
+<script>
+const pageNames=['home','study','services','universities','success','resources','about','contact'];
+
+function showPage(name, push=true){
+  if(!pageNames.includes(name)) name='home';
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.navlinks button').forEach(b=>b.classList.toggle('active',b.dataset.page===name));
+  document.getElementById('mobileMenu').classList.remove('open');
+  if(push){
+    history.replaceState(null,'','#'+name);
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.addEventListener('click',e=>{
+  const btn=e.target.closest('[data-page]');
+  if(btn){ e.preventDefault(); showPage(btn.dataset.page); }
+});
+document.getElementById('menuBtn').addEventListener('click',()=>document.getElementById('mobileMenu').classList.toggle('open'));
+window.addEventListener('hashchange',()=>showPage(location.hash.replace('#','')||'home',false));
+showPage(location.hash.replace('#','')||'home',false);
+</script>
+</body>
+</html>
