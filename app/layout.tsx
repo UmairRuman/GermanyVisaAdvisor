@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { JsonLd } from "@/components/json-ld";
 import { WhatsAppFloat } from "@/components/whatsapp-float";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
@@ -47,6 +48,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       style={{ colorScheme: "light" }}
     >
       <body className="min-h-screen bg-paper font-sans text-ink antialiased">
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "EducationalOrganization",
+            name: SITE_NAME,
+            url: SITE_URL,
+            description: SITE_DESCRIPTION,
+            areaServed: ["PK", "DE"],
+          }}
+        />
         <SiteHeader />
         <main>{children}</main>
         <SiteFooter />

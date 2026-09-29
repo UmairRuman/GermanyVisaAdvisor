@@ -138,13 +138,14 @@ function FloatingChip({
   delay: number;
   children: React.ReactNode;
 }) {
+  const reduceMotion = useReducedMotion();
   const x = useTransform(mx, (v) => v * depth);
   const y = useTransform(my, (v) => v * depth);
 
   return (
     <motion.div className={`absolute z-20 ${className}`} style={{ x, y }}>
       <motion.div
-        initial={{ opacity: 0, scale: 0.7, y: 20 }}
+        initial={reduceMotion ? false : { opacity: 0, scale: 0.7, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.8, delay, ease: EASE_SETTLE }}
       >
@@ -179,7 +180,7 @@ export function Hero() {
   return (
     <>
       <section
-        className="relative isolate overflow-hidden pt-14 pb-20 sm:pt-20 sm:pb-28"
+        className="relative isolate overflow-hidden pt-10 pb-16 sm:pt-20 sm:pb-28"
         onPointerMove={onPointerMove}
       >
         {/* Aurora: two soft, slowly drifting colour fields */}
@@ -191,7 +192,7 @@ export function Hero() {
         </div>
         <Grain className="-z-10" opacity={0.03} />
 
-        <div className="mx-auto grid max-w-6xl gap-16 px-6 lg:grid-cols-[1.02fr_0.98fr] lg:items-center">
+        <div className="mx-auto grid max-w-6xl gap-12 px-6 sm:gap-16 lg:grid-cols-[1.02fr_0.98fr] lg:items-center">
           <div>
             <motion.span
               initial={reduceMotion ? false : { opacity: 0, y: 12 }}
@@ -231,14 +232,14 @@ export function Hero() {
               transition={{ duration: 0.7, delay: 1.05, ease: EASE_SETTLE }}
               className="mt-9 flex flex-wrap items-center gap-4"
             >
-              <Magnetic>
-                <LinkButton href="/contact" variant="primary" className="px-7 py-4">
+              <Magnetic className="block w-full sm:inline-block sm:w-auto">
+                <LinkButton href="/contact" variant="primary" className="w-full px-7 py-4 sm:w-auto">
                   Get Your Free Assessment
                   <ArrowRight size={16} />
                 </LinkButton>
               </Magnetic>
-              <Magnetic>
-                <LinkButton href={buildWhatsAppLink()} variant="secondary" className="px-7 py-4">
+              <Magnetic className="block w-full sm:inline-block sm:w-auto">
+                <LinkButton href={buildWhatsAppLink()} variant="secondary" className="w-full px-7 py-4 sm:w-auto">
                   <MessageCircle size={16} className="text-[#1fae54]" />
                   Chat on WhatsApp
                 </LinkButton>
@@ -264,8 +265,8 @@ export function Hero() {
           </div>
 
           {/* Route card — tilts toward the cursor, with floating proof chips around it */}
-          <div className="relative mx-auto w-full max-w-[34rem] [perspective:1200px]">
-            <FloatingChip className="-left-3 top-10 sm:-left-8" depth={38} mx={mx} my={my} delay={1.1}>
+          <div className="relative mx-auto my-10 w-full max-w-[34rem] [perspective:1200px] sm:my-0">
+            <FloatingChip className="left-3 -top-9 sm:-left-8 sm:top-10" depth={38} mx={mx} my={my} delay={1.1}>
               <div className="flex items-center gap-2.5 rounded-2xl border border-line bg-paper-raised px-4 py-3 shadow-[0_20px_40px_-16px_rgba(26,22,19,0.35)]">
                 <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#1fae54]/12 text-[#1fae54]">
                   <BadgeCheck size={18} />
@@ -277,7 +278,7 @@ export function Hero() {
               </div>
             </FloatingChip>
 
-            <FloatingChip className="-right-2 bottom-24 sm:-right-8" depth={-30} mx={mx} my={my} delay={1.3}>
+            <FloatingChip className="-bottom-9 right-3 sm:-right-8 sm:bottom-24" depth={-30} mx={mx} my={my} delay={1.3}>
               <div className="flex items-center gap-2.5 rounded-2xl border border-line bg-paper-raised px-4 py-3 shadow-[0_20px_40px_-16px_rgba(26,22,19,0.35)]">
                 <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brick/10 text-brick">
                   <FileCheck2 size={18} />

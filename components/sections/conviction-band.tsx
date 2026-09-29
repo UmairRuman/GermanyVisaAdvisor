@@ -68,7 +68,7 @@ export function ConvictionBand() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 80%", "end 55%"] });
 
   return (
-    <section className="relative overflow-hidden bg-charcoal py-28 sm:py-36">
+    <section className="relative overflow-hidden bg-charcoal py-20 sm:py-36">
       <Grain opacity={0.05} blend="soft-light" />
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <div className="aurora-a absolute -right-20 top-0 h-[28rem] w-[28rem] rounded-full bg-gold/15 blur-[110px]" />

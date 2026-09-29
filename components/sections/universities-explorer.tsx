@@ -40,7 +40,7 @@ export function UniversitiesExplorer() {
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              className="w-full rounded-full border border-line bg-paper py-3.5 pl-11 pr-11 text-sm text-ink outline-none transition-[border-color,box-shadow] duration-200 focus:border-brick focus:shadow-[0_0_0_4px_rgba(179,36,28,0.10)]"
+              className="w-full rounded-full border border-line bg-paper py-3.5 pl-11 pr-11 text-base text-ink sm:text-sm outline-none transition-[border-color,box-shadow] duration-200 focus:border-brick focus:shadow-[0_0_0_4px_rgba(179,36,28,0.10)]"
               placeholder="Search a university or city…"
             />
             <AnimatePresence>
@@ -71,7 +71,7 @@ export function UniversitiesExplorer() {
                   aria-checked={active}
                   onClick={() => setDegree(option)}
                   className={cn(
-                    "relative rounded-full px-4 py-2.5 text-xs font-bold transition-colors duration-300",
+                    "relative whitespace-nowrap rounded-full px-3.5 py-2.5 text-xs font-bold transition-colors duration-300 sm:px-4",
                     active ? "text-paper" : "text-ink-muted hover:text-ink",
                   )}
                 >
@@ -82,7 +82,16 @@ export function UniversitiesExplorer() {
                       transition={{ type: "spring", stiffness: 400, damping: 32 }}
                     />
                   )}
-                  <span className="relative">{option}</span>
+                  <span className="relative">
+                    {option === "All degrees" ? (
+                      <>
+                        <span className="sm:hidden">All</span>
+                        <span className="hidden sm:inline">All degrees</span>
+                      </>
+                    ) : (
+                      option
+                    )}
+                  </span>
                 </button>
               );
             })}
@@ -182,7 +191,7 @@ export function UniversitiesExplorer() {
                   <p className="flex items-center gap-1.5 text-sm text-ink-muted">
                     <CalendarDays size={13} className="text-ink-muted/70" /> {university.intake}
                   </p>
-                  <LinkButton href="/contact" variant="secondary" className="w-fit px-4 py-2 text-xs">
+                  <LinkButton href="/contact" variant="secondary" className="w-full px-4 py-3 text-xs sm:w-fit sm:py-2">
                     Explore <ArrowRight size={13} />
                   </LinkButton>
                 </div>

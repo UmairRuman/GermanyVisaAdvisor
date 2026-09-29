@@ -18,7 +18,7 @@ export function FinalCta() {
   const backdropX = useTransform(scrollYProgress, [0, 1], ["8%", "-18%"]);
 
   return (
-    <section ref={ref} className="relative isolate overflow-hidden bg-charcoal pt-28">
+    <section ref={ref} className="relative isolate overflow-hidden bg-charcoal pt-20 sm:pt-28">
       <Grain opacity={0.05} blend="soft-light" />
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
         <div className="aurora-a absolute left-1/4 top-0 h-[30rem] w-[30rem] rounded-full bg-brick/25 blur-[120px]" />
@@ -48,13 +48,13 @@ export function FinalCta() {
         </Reveal>
         <Reveal delay={0.3}>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <Magnetic>
-              <LinkButton href="/contact" variant="primary" className="px-8 py-4">
+            <Magnetic className="block w-full sm:inline-block sm:w-auto">
+              <LinkButton href="/contact" variant="primary" className="w-full px-8 py-4 sm:w-auto">
                 Get Free Assessment <ArrowRight size={16} />
               </LinkButton>
             </Magnetic>
-            <Magnetic>
-              <LinkButton href={buildWhatsAppLink()} variant="dark-outline" className="px-8 py-4">
+            <Magnetic className="block w-full sm:inline-block sm:w-auto">
+              <LinkButton href={buildWhatsAppLink()} variant="dark-outline" className="w-full px-8 py-4 sm:w-auto">
                 <MessageCircle size={16} /> WhatsApp Us
               </LinkButton>
             </Magnetic>
@@ -62,7 +62,7 @@ export function FinalCta() {
         </Reveal>
       </div>
 
-      <div className="relative mt-24 border-t border-charcoal-line py-6">
+      <div className="relative mt-16 border-t sm:mt-24 border-charcoal-line py-6">
         <Marquee duration={38} reverse>
           {["Study in Germany", "Visa Guidance", "University Shortlisting", "Arrival Support", "Free Assessment"].map(
             (item) => (

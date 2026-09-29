@@ -121,7 +121,7 @@ export function Journey() {
   const planeTop = useTransform(progress, [0, 1], ["0%", "100%"]);
 
   return (
-    <section className="relative overflow-hidden border-b border-line bg-paper-raised py-28">
+    <section className="relative overflow-hidden border-b border-line bg-paper-raised py-20 sm:py-28">
       <div
         aria-hidden
         className="dot-grid pointer-events-none absolute inset-0 text-ink/[0.05] [mask-image:radial-gradient(ellipse_at_50%_0%,#000,transparent_60%)]"
@@ -129,7 +129,7 @@ export function Journey() {
       <div className="relative mx-auto max-w-5xl px-6">
         <SectionHeading eyebrow="The Journey" title="A Simple Path. A Brighter Future." />
 
-        <div ref={trackRef} className="relative mt-24 space-y-14 md:space-y-16">
+        <div ref={trackRef} className="relative mt-14 space-y-10 sm:mt-24 sm:space-y-14 md:space-y-16">
           {/* Route line: faint rail + a filled segment that grows with scroll */}
           <div aria-hidden className="absolute bottom-0 left-[17px] top-0 w-px bg-line md:left-1/2 md:-translate-x-1/2" />
           <motion.div

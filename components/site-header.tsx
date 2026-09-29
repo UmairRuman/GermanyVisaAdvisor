@@ -76,7 +76,7 @@ export function SiteHeader() {
                 onMouseEnter={() => setHovered(link.href)}
                 onFocus={() => setHovered(link.href)}
                 onBlur={() => setHovered(null)}
-                className={`relative rounded-full px-3.5 py-2 transition-colors duration-200 ${
+                className={`relative rounded-full px-3 py-2 transition-colors duration-200 ${
                   isActive ? "text-brick" : "hover:text-ink"
                 }`}
               >
@@ -116,7 +116,7 @@ export function SiteHeader() {
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
-          className={`relative flex h-10 w-10 items-center justify-center rounded-full border transition-colors lg:hidden ${
+          className={`relative flex h-11 w-11 items-center justify-center rounded-full border transition-colors lg:hidden ${
             open
               ? "border-paper/30 bg-transparent text-paper hover:border-paper"
               : "border-line bg-paper-raised/80 text-ink hover:border-ink"

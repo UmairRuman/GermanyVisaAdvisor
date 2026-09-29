@@ -17,7 +17,9 @@ export function SiteFooter() {
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-paper/10 text-xs font-bold text-paper">
               GC
             </span>
-            Germany<span className="text-brick">Chalo</span>
+            <span>
+              Germany<span className="text-brick">Chalo</span>
+            </span>
           </div>
           <p className="mt-4 text-sm leading-relaxed">
             From admission to arrival — clear, honest guidance for your Germany journey.
@@ -31,13 +33,13 @@ export function SiteFooter() {
           </Link>
         </div>
 
-        <nav aria-label="Footer" className="flex flex-col gap-1 text-sm font-semibold">
-          <p className="mb-2 text-xs font-bold uppercase tracking-wide text-paper/35">Explore</p>
+        <nav aria-label="Footer" className="grid grid-cols-2 gap-x-6 gap-y-0.5 text-sm font-semibold sm:flex sm:flex-col sm:gap-1">
+          <p className="col-span-2 mb-2 text-xs font-bold uppercase tracking-wide text-paper/35">Explore</p>
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="group flex w-fit items-center gap-2 py-1 transition-colors hover:text-paper"
+              className="group flex w-fit items-center gap-2 py-2.5 transition-colors hover:text-paper sm:py-1"
             >
               <span className="h-px w-0 bg-brick transition-[width] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:w-4" />
               {link.label}
@@ -64,13 +66,13 @@ export function SiteFooter() {
 
       {/* Oversized wordmark, cropped by the bottom edge */}
       <div aria-hidden className="relative select-none overflow-hidden px-4">
-        <p className="text-center font-display text-[clamp(4rem,17vw,15rem)] font-semibold leading-[0.8] tracking-tighter text-paper/[0.06]">
+        <p className="text-center font-display text-[clamp(2.75rem,13.2vw,15rem)] font-semibold leading-[0.8] tracking-tighter text-paper/[0.06]">
           GermanyChalo
         </p>
       </div>
 
       <div className="relative border-t border-charcoal-line">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5 text-xs text-paper/40">
+        <div className="mx-auto flex max-w-6xl flex-col-reverse items-start justify-between gap-4 px-6 py-5 pb-24 text-xs text-paper/40 sm:flex-row sm:items-center sm:pb-5">
           <span>© {new Date().getFullYear()} GermanyChalo. All rights reserved.</span>
           <a
             href="#"

@@ -28,6 +28,42 @@ body {
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  /* Never let a stray wide element create sideways scrolling on phones. */
+  overflow-x: clip;
+}
+
+/* Snappier taps: no 300ms delay, no grey flash on iOS/Android. */
+a,
+button,
+[role="radio"],
+[role="checkbox"],
+input,
+select,
+textarea,
+label {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Hide the scrollbar on swipeable strips while keeping them scrollable. */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Phones: freeze the big drifting blurs (costly to repaint) and soften their blur radius. */
+@media (max-width: 767px) {
+  .aurora-a,
+  .aurora-b {
+    animation: none;
+    filter: blur(64px) !important;
+  }
 }
 
 /* ---------- Motion primitives ---------- */
@@ -163,6 +199,45 @@ html {
 }
 .spotlight:hover::before {
   opacity: 1;
+}
+
+/* Range slider: --fill (0–100%) paints the filled portion of the track. */
+.range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+  background: linear-gradient(
+    90deg,
+    var(--color-brick) 0%,
+    var(--color-gold) var(--fill, 50%),
+    var(--color-line) var(--fill, 50%)
+  );
+}
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 28px;
+  width: 28px;
+  border-radius: 999px;
+  background: var(--color-paper-raised);
+  border: 3px solid var(--color-brick);
+  box-shadow: 0 6px 16px -4px rgba(179, 36, 28, 0.5);
+  transition: transform 0.2s var(--ease-settle);
+}
+.range::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+.range::-moz-range-thumb {
+  height: 22px;
+  width: 22px;
+  border-radius: 999px;
+  background: var(--color-paper-raised);
+  border: 3px solid var(--color-brick);
+  box-shadow: 0 6px 16px -4px rgba(179, 36, 28, 0.5);
 }
 
 .text-outline {

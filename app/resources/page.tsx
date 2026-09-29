@@ -19,6 +19,7 @@ import { Grain } from "@/components/ui/grain";
 import { LinkButton } from "@/components/ui/button";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
 import { FAQS } from "@/lib/data/faqs";
+import { JsonLd } from "@/components/json-ld";
 
 const GUIDES: { icon: LucideIcon; title: string; description: string }[] = [
   {
@@ -66,6 +67,17 @@ export default function ResourcesPage() {
 
   return (
     <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: FAQS.map((faq) => ({
+            "@type": "Question",
+            name: faq.question,
+            acceptedAnswer: { "@type": "Answer", text: faq.answer },
+          })),
+        }}
+      />
       <PageHero
         eyebrow="Resources"
         title={

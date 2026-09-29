@@ -122,7 +122,7 @@ export function SuccessTeaser() {
                       onClick={() => setIndex(i)}
                       aria-label={`Show ${s.name}'s story`}
                       aria-current={i === index}
-                      className={`flex h-9 w-9 items-center justify-center rounded-full border-2 text-xs font-bold transition-all duration-300 ${
+                      className={`flex h-10 w-10 items-center justify-center rounded-full border-2 text-[11px] font-bold transition-all duration-300 sm:h-9 sm:w-9 sm:text-xs ${
                         i === index
                           ? "scale-110 border-brick text-brick"
                           : "border-line text-ink-muted/60 hover:border-ink-muted"
@@ -137,7 +137,7 @@ export function SuccessTeaser() {
                     type="button"
                     onClick={() => go(-1)}
                     aria-label="Previous story"
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-line text-ink transition-colors hover:border-ink hover:bg-paper-raised"
+                    className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-ink transition-colors hover:border-ink hover:bg-paper-raised sm:h-9 sm:w-9"
                   >
                     <ArrowLeft size={15} />
                   </button>
@@ -145,7 +145,7 @@ export function SuccessTeaser() {
                     type="button"
                     onClick={() => go(1)}
                     aria-label="Next story"
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-line text-ink transition-colors hover:border-ink hover:bg-paper-raised"
+                    className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-ink transition-colors hover:border-ink hover:bg-paper-raised sm:h-9 sm:w-9"
                   >
                     <ArrowRight size={15} />
                   </button>

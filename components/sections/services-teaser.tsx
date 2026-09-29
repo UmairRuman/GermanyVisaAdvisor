@@ -65,7 +65,7 @@ export function ServicesTeaser() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <section className="relative overflow-hidden bg-paper py-28">
+    <section className="relative overflow-hidden bg-paper py-20 sm:py-28">
       <div
         aria-hidden
         className="pointer-events-none absolute left-1/2 top-24 h-[26rem] w-[44rem] -translate-x-1/2 rounded-full bg-gold/10 blur-[110px]"
@@ -81,7 +81,7 @@ export function ServicesTeaser() {
           }
         />
 
-        <div className="mt-16 grid gap-5 lg:grid-cols-3">
+        <div className="mt-12 grid gap-4 sm:mt-16 sm:gap-5 lg:grid-cols-3">
           {/* 1 — University guidance (wide) */}
           <Reveal className="lg:col-span-2">
             <SpotlightCard className={`${cardBase} h-full border-line bg-paper-raised hover:border-brick/25 hover:shadow-[0_30px_60px_-30px_rgba(26,22,19,0.3)]`}>

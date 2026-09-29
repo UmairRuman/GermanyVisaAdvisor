@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/page-hero";
+import { BookCall } from "@/components/sections/book-call";
 import { ContactSection } from "@/components/sections/contact-section";
 
 export const metadata: Metadata = {
@@ -21,6 +22,7 @@ export default function ContactPage() {
         }
         description="Send your basic profile and start with a clear next step."
       />
+      <BookCall />
       <ContactSection />
     </>
   );

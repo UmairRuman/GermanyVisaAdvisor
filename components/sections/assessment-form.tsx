@@ -112,7 +112,7 @@ export function AssessmentForm() {
   }
 
   return (
-    <section className="relative overflow-hidden bg-paper py-28">
+    <section className="relative overflow-hidden bg-paper py-16 sm:py-28">
       <div
         aria-hidden
         className="pointer-events-none absolute -left-40 top-10 h-[28rem] w-[28rem] rounded-full bg-brick/10 blur-[120px]"
@@ -180,7 +180,7 @@ export function AssessmentForm() {
                 if (isLast) void handleSubmit(onSubmit)(event);
                 else void goNext();
               }}
-              className="bg-paper-raised p-8 sm:p-10"
+              className="bg-paper-raised p-6 sm:p-10"
             >
               {submitted ? (
                 <SuccessBurst className="h-full min-h-[420px]" />
@@ -246,7 +246,7 @@ export function AssessmentForm() {
                               <input className={fieldInputClass} placeholder="Your full name" autoComplete="name" {...register("name")} />
                             </Field>
                             <Field label="WhatsApp Number" error={errors.whatsapp?.message}>
-                              <input className={fieldInputClass} placeholder="+92 3xx xxxxxxx" autoComplete="tel" {...register("whatsapp")} />
+                              <input className={fieldInputClass} placeholder="+92 3xx xxxxxxx" type="tel" inputMode="tel" autoComplete="tel" {...register("whatsapp")} />
                             </Field>
                           </>
                         )}

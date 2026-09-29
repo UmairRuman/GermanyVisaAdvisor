@@ -84,7 +84,8 @@ export function ContactSection() {
   return (
     <section className="bg-paper pb-24">
       <div className="mx-auto grid max-w-6xl gap-6 px-6 lg:grid-cols-[0.85fr_1.15fr]">
-        <div className="space-y-4">
+        {/* On phones the form comes first — that's the action; contact details follow it. */}
+        <div className="order-2 grid gap-4 sm:grid-cols-3 lg:order-1 lg:block lg:space-y-4">
           {CONTACT_CARDS.map((card, index) => {
             const Icon = card.icon;
             return (
@@ -106,8 +107,8 @@ export function ContactSection() {
           })}
         </div>
 
-        <Reveal delay={0.1}>
-          <Card className="p-8 sm:p-10">
+        <Reveal delay={0.1} className="order-1 lg:order-2">
+          <Card className="p-6 sm:p-10">
             {submitted ? (
               <SuccessBurst />
             ) : (
@@ -125,6 +126,9 @@ export function ContactSection() {
                   <Field label="WhatsApp" error={errors.whatsapp?.message}>
                     <input
                       className={fieldInputClass}
+                      type="tel"
+                      inputMode="tel"
+                      autoComplete="tel"
                       placeholder="+92 3xx xxxxxxx"
                       {...register("whatsapp")}
                     />
