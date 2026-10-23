@@ -23,6 +23,9 @@ import { LinkButton } from "@/components/ui/button";
 import { SocialCards, SocialIconRow } from "@/components/social-links";
 import { FinalCta } from "@/components/sections/final-cta";
 import { STUDENTS_GUIDED } from "@/lib/site";
+import { UNIVERSITIES } from "@/lib/data/universities";
+
+const CITY_COUNT = new Set(UNIVERSITIES.map((u) => u.city)).size;
 
 export const metadata: Metadata = {
   title: "About GermanyChalo",
@@ -279,8 +282,9 @@ export default function AboutPage() {
         <div className="relative mx-auto grid max-w-4xl gap-10 px-6 sm:grid-cols-3">
           {[
             { icon: Users, value: STUDENTS_GUIDED, suffix: "+", label: "Students guided" },
-            { icon: LayoutList, value: 9, suffix: "", label: "Guided service areas" },
-            { icon: GraduationCap, value: 1, suffix: "", label: "Clear, guided process" },
+            // Counted from the real university list, so these stay true as the list grows.
+            { icon: GraduationCap, value: UNIVERSITIES.length, suffix: "", label: "Universities covered" },
+            { icon: LayoutList, value: CITY_COUNT, suffix: "", label: "Cities across Germany" },
           ].map((stat, index) => {
             const Icon = stat.icon;
             return (

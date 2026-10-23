@@ -21,7 +21,7 @@ export const SOCIAL_LINKS: { id: SocialId; label: string; cta: string; href: str
 export const BLOCKED_ACCOUNT_VIDEO_URL = "https://youtu.be/5M8bFwaeKn8";
 
 // TODO: client to confirm — shown on the hero card and the About page.
-export const STUDENTS_GUIDED = 100;
+export const STUDENTS_GUIDED = 500;
 
 export const SITE_DESCRIPTION =
   "From university shortlisting to visa preparation — clear, honest guidance for Pakistani students planning to study in Germany.";
