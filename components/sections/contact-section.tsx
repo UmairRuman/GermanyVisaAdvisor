@@ -11,6 +11,7 @@ import { Field, fieldInputClass } from "@/components/ui/field";
 import { Button, LinkButton } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
+import { SocialIconRow } from "@/components/social-links";
 
 const schema = z.object({
   name: z.string().min(2, "Enter your full name"),
@@ -112,6 +113,13 @@ export function ContactSection() {
               </Reveal>
             );
           })}
+          <Reveal delay={CONTACT_CARDS.length * 0.06}>
+            <Card>
+              <h3 className="font-display text-lg font-semibold text-ink">Follow us</h3>
+              <p className="mt-1 text-sm text-ink-muted">Free guides and updates on our channels.</p>
+              <SocialIconRow className="mt-4" />
+            </Card>
+          </Reveal>
         </div>
 
         <Reveal delay={0.1} className="order-1 lg:order-2">

@@ -4,6 +4,7 @@ import { YOUTUBE_URL } from "@/lib/site";
 import { NAV_LINKS } from "@/lib/nav";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
 import { Grain } from "@/components/ui/grain";
+import { SocialIconRow } from "@/components/social-links";
 
 export function SiteFooter() {
   return (
@@ -25,6 +26,8 @@ export function SiteFooter() {
           <p className="mt-4 text-sm leading-relaxed">
             From admission to arrival — clear, honest guidance for your Germany journey.
           </p>
+          <p className="mb-3 mt-6 text-xs font-bold uppercase tracking-wide text-paper/35">Follow us</p>
+          <SocialIconRow tone="dark" />
           <Link
             href="/contact"
             className="group mt-6 inline-flex items-center gap-2 rounded-full border border-paper/20 px-5 py-2.5 text-sm font-bold text-paper transition-colors duration-300 hover:border-paper hover:bg-paper hover:text-charcoal"
