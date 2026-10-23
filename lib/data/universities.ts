@@ -11,47 +11,30 @@ export type University = {
   degrees: Degree[];
 };
 
-// Illustrative only — replace with the client's real partner/target university list
-// (see docs/04-tech-stack.md, open question #5).
+// Well-known German universities. Languages, intakes and degree levels are indicative only —
+// they differ program by program, so we confirm them for each student's shortlist.
+// TODO: client to review the list and mark the universities they most often work with.
+const ALL: Degree[] = ["Bachelor", "Master", "PhD"];
+
 export const UNIVERSITIES: University[] = [
-  {
-    name: "Technical University Example",
-    city: "Darmstadt",
-    type: "Public",
-    languages: "English / German",
-    intake: "Winter",
-    degrees: ["Bachelor", "Master"],
-  },
-  {
-    name: "University of Example",
-    city: "Berlin",
-    type: "Public",
-    languages: "English",
-    intake: "Winter / Summer",
-    degrees: ["Master", "PhD"],
-  },
-  {
-    name: "Applied Sciences Example",
-    city: "Munich",
-    type: "Public",
-    languages: "German / English",
-    intake: "Winter",
-    degrees: ["Bachelor"],
-  },
-  {
-    name: "Institute of Technology Example",
-    city: "Stuttgart",
-    type: "Public",
-    languages: "English",
-    intake: "Winter",
-    degrees: ["Master", "PhD"],
-  },
-  {
-    name: "University of Applied Sciences Example",
-    city: "Hamburg",
-    type: "Public",
-    languages: "English / German",
-    intake: "Summer",
-    degrees: ["Bachelor", "Master"],
-  },
+  { name: "Technical University of Munich (TUM)", city: "Munich", type: "Public", languages: "English / German", intake: "Winter / Summer", degrees: ALL },
+  { name: "Ludwig Maximilian University of Munich (LMU)", city: "Munich", type: "Public", languages: "English / German", intake: "Winter / Summer", degrees: ALL },
+  { name: "Heidelberg University", city: "Heidelberg", type: "Public", languages: "English / German", intake: "Winter / Summer", degrees: ALL },
+  { name: "RWTH Aachen University", city: "Aachen", type: "Public", languages: "English / German", intake: "Winter / Summer", degrees: ALL },
+  { name: "Technical University of Berlin (TU Berlin)", city: "Berlin", type: "Public", languages: "English / German", intake: "Winter / Summer", degrees: ALL },
+  { name: "Humboldt University of Berlin", city: "Berlin", type: "Public", languages: "English / German", intake: "Winter / Summer", degrees: ALL },
+  { name: "Free University of Berlin (FU Berlin)", city: "Berlin", type: "Public", languages: "English / German", intake: "Winter / Summer", degrees: ALL },
+  { name: "Karlsruhe Institute of Technology (KIT)", city: "Karlsruhe", type: "Public", languages: "English / German", intake: "Winter / Summer", degrees: ALL },
+  { name: "University of Stuttgart", city: "Stuttgart", type: "Public", languages: "English / German", intake: "Winter / Summer", degrees: ALL },
+  { name: "Technical University of Darmstadt", city: "Darmstadt", type: "Public", languages: "English / German", intake: "Winter / Summer", degrees: ALL },
+  { name: "University of Hamburg", city: "Hamburg", type: "Public", languages: "English / German", intake: "Winter / Summer", degrees: ALL },
+  { name: "University of Freiburg", city: "Freiburg", type: "Public", languages: "English / German", intake: "Winter / Summer", degrees: ALL },
+  { name: "University of Bonn", city: "Bonn", type: "Public", languages: "English / German", intake: "Winter / Summer", degrees: ALL },
+  { name: "TU Dresden", city: "Dresden", type: "Public", languages: "English / German", intake: "Winter / Summer", degrees: ALL },
+  { name: "University of Göttingen", city: "Göttingen", type: "Public", languages: "English / German", intake: "Winter / Summer", degrees: ALL },
+  { name: "University of Mannheim", city: "Mannheim", type: "Public", languages: "English / German", intake: "Winter / Summer", degrees: ALL },
+  { name: "Goethe University Frankfurt", city: "Frankfurt", type: "Public", languages: "English / German", intake: "Winter / Summer", degrees: ALL },
+  { name: "University of Cologne", city: "Cologne", type: "Public", languages: "English / German", intake: "Winter / Summer", degrees: ALL },
+  { name: "TU Dortmund University", city: "Dortmund", type: "Public", languages: "English / German", intake: "Winter / Summer", degrees: ALL },
+  { name: "University of Münster", city: "Münster", type: "Public", languages: "English / German", intake: "Winter / Summer", degrees: ALL },
 ];

@@ -2,7 +2,8 @@
 
 import { useState, type CSSProperties } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowRight, Landmark, Info, MessageCircle } from "lucide-react";
+import { ArrowRight, Landmark, Info, MessageCircle, Play } from "lucide-react";
+import { BLOCKED_ACCOUNT_VIDEO_URL, YOUTUBE_URL } from "@/lib/site";
 import { LinkButton } from "@/components/ui/button";
 import { Grain } from "@/components/ui/grain";
 import { LiveNumber } from "@/components/ui/live-number";
@@ -139,9 +140,25 @@ export function BlockedAccountCalculator() {
               can change — we&rsquo;ll confirm the current figure with you.
             </p>
           </div>
-          <LinkButton href={buildWhatsAppLink(message)} variant="primary" className="w-full">
-            <MessageCircle size={16} /> Get help opening my account <ArrowRight size={16} />
+          <LinkButton href={BLOCKED_ACCOUNT_VIDEO_URL} variant="primary" className="w-full">
+            <Play size={16} /> Get help opening my account <ArrowRight size={16} />
           </LinkButton>
+          <a
+            href={YOUTUBE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 rounded-full border border-paper/20 px-5 py-3 text-sm font-bold text-paper transition-colors duration-300 hover:border-paper hover:bg-paper hover:text-charcoal"
+          >
+            <Play size={15} /> Watch our guides on YouTube
+          </a>
+          <a
+            href={buildWhatsAppLink(message)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-1.5 text-xs font-bold text-paper/60 transition-colors hover:text-paper"
+          >
+            <MessageCircle size={13} /> Or ask an advisor on WhatsApp
+          </a>
         </div>
       </div>
     </div>

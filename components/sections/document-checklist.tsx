@@ -4,7 +4,6 @@ import { useSyncExternalStore } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { Check, ClipboardCheck, MessageCircle, RotateCcw } from "lucide-react";
 import { LinkButton } from "@/components/ui/button";
-import { LiveNumber } from "@/components/ui/live-number";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
 import { EASE_SETTLE } from "@/lib/motion";
 import { cn } from "@/lib/cn";
@@ -40,6 +39,12 @@ function save(ids: string[]) {
     // Storage blocked (private mode) — ticks just won't persist.
   }
   window.dispatchEvent(new Event(CHANGE_EVENT));
+}
+
+// Red at the start, drifting toward yellow as items are ticked, solid green only when complete.
+function ringColor(percent: number) {
+  if (percent >= 100) return "hsl(142, 70%, 42%)";
+  return `hsl(${Math.round(4 + (percent / 100) * 46)}, 82%, 52%)`;
 }
 
 const RADIUS = 46;
@@ -97,18 +102,20 @@ export function DocumentChecklist() {
                   cy="55"
                   r={RADIUS}
                   fill="none"
-                  stroke="var(--color-gold)"
                   strokeWidth="9"
                   strokeLinecap="round"
                   strokeDasharray={CIRCUMFERENCE}
                   initial={false}
-                  animate={{ strokeDashoffset: CIRCUMFERENCE * (1 - count / CHECKLIST_TOTAL) }}
+                  animate={{
+                    strokeDashoffset: CIRCUMFERENCE * (1 - count / CHECKLIST_TOTAL),
+                    stroke: ringColor(percent),
+                  }}
                   transition={{ duration: reduceMotion ? 0 : 0.7, ease: EASE_SETTLE }}
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className="font-display text-3xl font-semibold" aria-live="polite">
-                  <LiveNumber value={percent} />%
+                  {percent}%
                 </span>
               </div>
             </div>

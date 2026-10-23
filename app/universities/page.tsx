@@ -65,8 +65,8 @@ export default function UniversitiesPage() {
         <div className="mx-auto max-w-6xl px-6">
           <UniversitiesExplorer />
           <p className="mt-8 rounded-2xl border border-line bg-paper-raised p-5 text-sm text-ink-muted">
-            This list is illustrative front-end content. Real partner university data can be
-            connected once confirmed with the client.
+            Languages, intakes and degree levels are indicative and vary by program. We confirm
+            the exact requirements and deadlines for every university on your shortlist.
           </p>
         </div>
       </section>

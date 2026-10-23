@@ -3,39 +3,41 @@ export type Story = {
   badge: string;
   name: string;
   program: string;
+  /** Written in Roman Urdu (Urdu in English letters), the way students actually talk. */
   quote: string;
 };
 
-// TODO: replace with real, consented student stories — see docs/01-project-brief.md.
-// Initials/monograms are used instead of photos so nothing here is mistaken for a real,
-// identifiable student before real stories and consent exist.
+// PLACEHOLDER COPY — written to show layout and tone. Replace with real, consented student
+// stories before launch; do not present these as genuine reviews (see docs/01-project-brief.md).
+// Initials are used instead of photos so nothing is mistaken for a real, identifiable student.
+// Tone: simple Roman Urdu, centred on transparency — students compare us with other consultancies.
 export const STORIES: Story[] = [
   {
     initials: "M.A.",
     badge: "Visa Approved",
-    name: "Muhammad Ahmed",
-    program: "MSc Computer Science · Winter Intake",
-    quote: "I didn't understand any of the visa process until it was broken down step by step.",
+    name: "Muhammad Ahmed, Lahore",
+    program: "BSc Computer Science · Winter Intake",
+    quote: "Pehli meeting mein hi unhon ne fees, time aur chances sab saaf bata diye. Koi jhoota wada nahi kiya, aur akhir tak aisa hi raha.",
   },
   {
-    initials: "A.S.",
+    initials: "A.K.",
     badge: "Admission + Visa",
-    name: "Areeba S.",
+    name: "Areeba Khan, Karachi",
     program: "MSc Engineering · Germany",
-    quote: "Having someone check every document before submission removed all the guesswork.",
+    quote: "Main kai consultancies se mil chuki thi. Yahan har step simple alfaaz mein samjhaya gaya aur koi baat chhupai nahi gayi. Isi liye bharosa hua.",
   },
   {
-    initials: "H.K.",
-    badge: "Success Story",
-    name: "Hamza K.",
-    program: "MSc Data Science · Germany",
-    quote: "University shortlisting to pre-departure — every stage was mapped out clearly.",
+    initials: "H.M.",
+    badge: "Visa Approved",
+    name: "Hamza Malik, Islamabad",
+    program: "BS Business Administration · Germany",
+    quote: "Har document khud dekh kar bataya ke kya theek hai aur kya nahi. Aisi imandari mujhe kisi consultancy mein pehle nahi mili.",
   },
   {
     initials: "S.R.",
-    badge: "Visa Approved",
-    name: "Sara R.",
-    program: "MSc Business · Germany",
-    quote: "Every step, from choosing a university to visa paperwork, was explained before I had to ask.",
+    badge: "Admission Received",
+    name: "Sara Rauf, Faisalabad",
+    program: "MSc Data Science · Germany",
+    quote: "Ghar walon ko sab se zyada yaqeen is baat par hua ke har kharcha aur har step pehle se bata diya gaya. Koi hidden fee nahi thi.",
   },
 ];

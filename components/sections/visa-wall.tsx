@@ -11,11 +11,11 @@ import type { Story } from "@/lib/data/stories";
 
 // TODO: swap these placeholder documents for real, consented, redacted visa images.
 function DocumentMock({ story, large = false, delay = 0 }: { story: Story; large?: boolean; delay?: number }) {
-  const lines = large ? 8 : 4;
+  const lines = large ? 6 : 3;
   return (
     <div
       className={`relative flex flex-col justify-between overflow-hidden rounded-xl border border-line bg-paper-raised ${
-        large ? "min-h-[380px] p-7" : "h-40 p-4"
+        large ? "min-h-[380px] p-7" : "h-44 p-4"
       }`}
     >
       <Grain opacity={0.05} />
@@ -31,14 +31,28 @@ function DocumentMock({ story, large = false, delay = 0 }: { story: Story; large
           <BadgeCheck size={large ? 13 : 10} /> Verified
         </span>
       </div>
-      <div className={`relative ${large ? "space-y-3" : "space-y-1.5"}`}>
-        {Array.from({ length: lines }, (_, i) => (
-          <div
-            key={i}
-            className={`rounded-full bg-ink/[0.08] ${large ? "h-3" : "h-2"}`}
-            style={{ width: `${[100, 80, 100, 66, 90, 74, 100, 58][i]}%` }}
-          />
-        ))}
+      <div className={`relative flex items-start ${large ? "gap-5" : "gap-3"}`}>
+        {/* Dummy passport-style photo — replace with the redacted document scan */}
+        <div
+          aria-hidden
+          className={`relative shrink-0 overflow-hidden rounded-md border border-line bg-gradient-to-b from-[#d9cdb8] to-[#b9a98c] ${
+            large ? "h-28 w-24" : "h-14 w-11"
+          }`}
+        >
+          <svg viewBox="0 0 48 56" className="absolute inset-0 h-full w-full text-ink/35" fill="currentColor">
+            <circle cx="24" cy="21" r="9" />
+            <path d="M6 56c0-12 8-19 18-19s18 7 18 19z" />
+          </svg>
+        </div>
+        <div className={`min-w-0 flex-1 ${large ? "space-y-3 pt-2" : "space-y-1.5 pt-1"}`}>
+          {Array.from({ length: lines }, (_, i) => (
+            <div
+              key={i}
+              className={`rounded-full bg-ink/[0.08] ${large ? "h-3" : "h-2"}`}
+              style={{ width: `${[100, 80, 92, 66, 90, 74, 100, 58][i]}%` }}
+            />
+          ))}
+        </div>
       </div>
       <div className="relative flex items-end justify-between">
         <span className={`font-bold uppercase tracking-widest text-ink-muted/50 ${large ? "text-xs" : "text-[10px]"}`}>

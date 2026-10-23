@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Reveal } from "@/components/reveal";
 import { Grain } from "@/components/ui/grain";
 import { AnimatedNumber } from "@/components/ui/animated-number";
+import { STUDENTS_GUIDED } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About GermanyChalo",
@@ -116,7 +117,7 @@ export default function AboutPage() {
         <Grain opacity={0.045} blend="soft-light" />
         <div className="relative mx-auto grid max-w-4xl gap-10 px-6 sm:grid-cols-3">
           {[
-            { icon: Users, value: 500, suffix: "+", label: "Students guided" },
+            { icon: Users, value: STUDENTS_GUIDED, suffix: "+", label: "Students guided" },
             { icon: LayoutList, value: 9, suffix: "", label: "Guided service areas" },
             { icon: GraduationCap, value: 1, suffix: "", label: "Clear, guided process" },
           ].map((stat, index) => {

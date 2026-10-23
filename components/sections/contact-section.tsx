@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { SuccessBurst } from "@/components/ui/success-burst";
-import { ArrowRight, Lock, Mail, MapPin, MessageCircle, type LucideIcon } from "lucide-react";
+import { ArrowRight, Lock, Mail, MessageCircle, type LucideIcon } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import { Field, fieldInputClass } from "@/components/ui/field";
 import { Button, LinkButton } from "@/components/ui/button";
@@ -19,8 +19,19 @@ const schema = z.object({
   fieldOfStudy: z.string().min(2, "Required"),
   score: z.string().min(1, "Required"),
   degree: z.enum(["Bachelor", "Master", "PhD"]),
+  languageTest: z.string().min(1),
+  languageScore: z.string().optional(),
   message: z.string().optional(),
 });
+
+const LANGUAGE_TESTS = [
+  "Not taken yet",
+  "IELTS",
+  "TOEFL",
+  "PTE",
+  "Duolingo English Test",
+  "German (Goethe / telc / TestDaF)",
+];
 
 type FormValues = z.infer<typeof schema>;
 
@@ -31,7 +42,7 @@ type ContactCard = {
   action?: { label: string; href: string };
 };
 
-// TODO: client to provide the real email and office address (see docs/04-tech-stack.md).
+// TODO: client to provide the real email (see docs/04-tech-stack.md). Office card removed for now.
 const CONTACT_CARDS: ContactCard[] = [
   {
     icon: MessageCircle,
@@ -44,11 +55,6 @@ const CONTACT_CARDS: ContactCard[] = [
     title: "Email",
     description: "hello@germanychalo.com",
   },
-  {
-    icon: MapPin,
-    title: "Office",
-    description: "Address to be added once confirmed.",
-  },
 ];
 
 export function ContactSection() {
@@ -59,7 +65,7 @@ export function ContactSection() {
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { degree: "Master" },
+    defaultValues: { degree: "Master", languageTest: LANGUAGE_TESTS[0] },
   });
 
   function onSubmit(data: FormValues) {
@@ -71,6 +77,7 @@ export function ContactSection() {
       `Field of Study: ${data.fieldOfStudy}`,
       `CGPA / Percentage: ${data.score}`,
       `Desired Degree: ${data.degree}`,
+      `Language Test: ${data.languageTest}${data.languageScore ? ` — ${data.languageScore}` : ""}`,
       `WhatsApp: ${data.whatsapp}`,
       data.message ? `Message: ${data.message}` : undefined,
     ]
@@ -85,7 +92,7 @@ export function ContactSection() {
     <section className="bg-paper pb-24">
       <div className="mx-auto grid max-w-6xl gap-6 px-6 lg:grid-cols-[0.85fr_1.15fr]">
         {/* On phones the form comes first — that's the action; contact details follow it. */}
-        <div className="order-2 grid gap-4 sm:grid-cols-3 lg:order-1 lg:block lg:space-y-4">
+        <div className="order-2 grid gap-4 sm:grid-cols-2 lg:order-1 lg:block lg:space-y-4">
           {CONTACT_CARDS.map((card, index) => {
             const Icon = card.icon;
             return (
@@ -155,6 +162,22 @@ export function ContactSection() {
                       className={fieldInputClass}
                       placeholder="e.g. Computer Science"
                       {...register("fieldOfStudy")}
+                    />
+                  </Field>
+                  <Field label="Language Test" error={errors.languageTest?.message}>
+                    <select className={fieldInputClass} {...register("languageTest")}>
+                      {LANGUAGE_TESTS.map((test) => (
+                        <option key={test} value={test}>
+                          {test}
+                        </option>
+                      ))}
+                    </select>
+                  </Field>
+                  <Field label="Score / Grade">
+                    <input
+                      className={fieldInputClass}
+                      placeholder="e.g. IELTS 6.5 · German B1"
+                      {...register("languageScore")}
                     />
                   </Field>
                   <div className="sm:col-span-2">

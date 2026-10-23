@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ArrowUp, ArrowUpRight, Mail, MessageCircle } from "lucide-react";
+import { ArrowUp, ArrowUpRight, Mail, MessageCircle, Play } from "lucide-react";
+import { YOUTUBE_URL } from "@/lib/site";
 import { NAV_LINKS } from "@/lib/nav";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
 import { Grain } from "@/components/ui/grain";
@@ -60,6 +61,14 @@ export function SiteFooter() {
             className="flex items-center gap-2 py-1 font-semibold text-paper/80 transition-colors hover:text-paper"
           >
             <MessageCircle size={15} className="text-gold" /> Chat on WhatsApp
+          </a>
+          <a
+            href={YOUTUBE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 py-1 font-semibold text-paper/80 transition-colors hover:text-paper"
+          >
+            <Play size={15} className="text-gold" /> YouTube channel
           </a>
         </div>
       </div>

@@ -35,10 +35,10 @@ export default function ToolsPage() {
         description="Free calculators and checklists to help you understand where you stand — before you speak to anyone."
       />
 
-      <section className="bg-paper pb-24">
+      <section className="bg-paper pb-24 pt-10">
         <div className="mx-auto max-w-6xl px-6">
           <Reveal>
-            <nav aria-label="Jump to a tool" className="-mt-4 mb-12 flex flex-wrap justify-center gap-2">
+            <nav aria-label="Jump to a tool" className="mb-12 flex flex-wrap justify-center gap-2">
               {TOOLS.map((tool) => (
                 <a
                   key={tool.id}

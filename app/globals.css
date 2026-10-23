@@ -240,9 +240,11 @@ label {
   box-shadow: 0 6px 16px -4px rgba(179, 36, 28, 0.5);
 }
 
+/* Outlined text: hollow fill, stroke takes the element's own text colour. Using
+   text-fill-color (not color: transparent) keeps currentColor usable for the stroke. */
 .text-outline {
+  -webkit-text-fill-color: transparent;
   -webkit-text-stroke: 1.5px currentColor;
-  color: transparent;
 }
 
 .dot-grid {

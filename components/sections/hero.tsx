@@ -19,6 +19,7 @@ import { Magnetic } from "@/components/ui/magnetic";
 import { Marquee } from "@/components/ui/marquee";
 import { SplitText } from "@/components/ui/split-text";
 import { AnimatedNumber } from "@/components/ui/animated-number";
+import { STUDENTS_GUIDED } from "@/lib/site";
 import { Grain } from "@/components/ui/grain";
 
 const ROUTE_PATH = "M64,196 C132,58 268,182 372,62";
@@ -320,7 +321,7 @@ export function Hero() {
               <div className="relative mt-4 grid grid-cols-2 gap-3 border-t border-paper/10 pt-5">
                 <div className="rounded-2xl border border-paper/10 bg-paper/[0.04] px-4 py-3">
                   <p className="font-display text-3xl font-semibold">
-                    <AnimatedNumber value={500} suffix="+" />
+                    <AnimatedNumber value={STUDENTS_GUIDED} suffix="+" />
                   </p>
                   <p className="text-xs font-semibold text-paper/55">Students guided</p>
                 </div>

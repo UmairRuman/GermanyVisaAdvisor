@@ -11,7 +11,7 @@ import { Magnetic } from "@/components/ui/magnetic";
 import { UNIVERSITIES } from "@/lib/data/universities";
 import { EASE_SETTLE } from "@/lib/motion";
 
-const CITIES = Array.from(new Set(UNIVERSITIES.map((u) => u.city)));
+const CITIES = Array.from(new Set(UNIVERSITIES.map((u) => u.city))).slice(0, 8);
 const VISA_ITEMS = ["Admission letter", "Blocked account", "Health insurance", "Visa appointment"];
 const DEPARTURE_ITEMS = ["Accommodation", "Flights & luggage", "Bank & SIM", "City registration"];
 
