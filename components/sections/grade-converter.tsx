@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowRight, Calculator, MessageCircle } from "lucide-react";
+import { ArrowRight, Calculator, Mail } from "lucide-react";
 import { LinkButton } from "@/components/ui/button";
 import { LiveNumber } from "@/components/ui/live-number";
 import { fieldInputClass } from "@/components/ui/field";
-import { buildWhatsAppLink } from "@/lib/whatsapp";
+import { buildMailLink } from "@/lib/contact";
 import { EASE_SETTLE } from "@/lib/motion";
 import { cn } from "@/lib/cn";
 import { SCALES, describeGermanGrade, toGermanGrade, type GradeScale } from "@/lib/data/tools";
@@ -172,8 +172,8 @@ export function GradeConverter() {
             Uses the standard &ldquo;modified Bavarian formula&rdquo;. It&rsquo;s an estimate — each university
             or uni-assist makes the official conversion.
           </p>
-          <LinkButton href={buildWhatsAppLink(message)} variant="primary" className="w-full">
-            <MessageCircle size={16} /> Which programs fit my grade? <ArrowRight size={16} />
+          <LinkButton href={buildMailLink(message)} variant="primary" className="w-full">
+            <Mail size={16} /> Which programs fit my grade? <ArrowRight size={16} />
           </LinkButton>
         </div>
       </div>

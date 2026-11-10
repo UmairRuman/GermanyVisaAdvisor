@@ -28,7 +28,7 @@ export function SiteHeader() {
     };
   }, [open]);
 
-  const allLinks = [...NAV_LINKS, { href: "/contact", label: "Contact / Free Assessment" }];
+  const allLinks = [...NAV_LINKS, { href: "/contact", label: "Contact / Free Check" }, { href: "/book-appointment", label: "Book Appointment" }];
 
   return (
     <>
@@ -48,7 +48,7 @@ export function SiteHeader() {
       >
         <Link
           href="/"
-          className={`group flex items-center gap-2.5 font-display text-xl font-semibold tracking-tight transition-colors duration-300 ${
+          className={`group flex shrink-0 items-center gap-2.5 whitespace-nowrap font-display text-xl font-semibold tracking-tight transition-colors duration-300 ${
             open ? "text-paper" : "text-ink"
           }`}
           onClick={() => setOpen(false)}
@@ -63,7 +63,7 @@ export function SiteHeader() {
         </Link>
 
         <nav
-          className="hidden items-center gap-1 text-sm font-semibold text-ink/80 lg:flex"
+          className="hidden items-center gap-1 text-sm font-semibold text-ink/80 xl:flex"
           onMouseLeave={() => setHovered(null)}
         >
           {NAV_LINKS.map((link) => {
@@ -76,7 +76,7 @@ export function SiteHeader() {
                 onMouseEnter={() => setHovered(link.href)}
                 onFocus={() => setHovered(link.href)}
                 onBlur={() => setHovered(null)}
-                className={`relative rounded-full px-3 py-2 transition-colors duration-200 ${
+                className={`relative whitespace-nowrap rounded-full px-3 py-2 transition-colors duration-200 ${
                   isActive ? "text-brick" : "hover:text-ink"
                 }`}
               >
@@ -102,12 +102,12 @@ export function SiteHeader() {
           })}
         </nav>
 
-        <Magnetic className="hidden lg:inline-block" strength={0.25}>
+        <Magnetic className="hidden xl:inline-block" strength={0.25}>
           <Link
-            href="/contact"
-            className="shine group relative inline-flex items-center gap-2 rounded-full bg-brick px-5 py-2.5 text-sm font-bold text-paper shadow-[0_10px_24px_-8px_rgba(179,36,28,0.55)] transition-[background-color,box-shadow] duration-200 hover:bg-brick-dark"
+            href="/book-appointment"
+            className="shine group relative inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-brick px-5 py-2.5 text-sm font-bold text-paper shadow-[0_10px_24px_-8px_rgba(179,36,28,0.55)] transition-[background-color,box-shadow] duration-200 hover:bg-brick-dark"
           >
-            Free Assessment
+            Book Appointment
             <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
         </Magnetic>
@@ -116,7 +116,7 @@ export function SiteHeader() {
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
-          className={`relative flex h-11 w-11 items-center justify-center rounded-full border transition-colors lg:hidden ${
+          className={`relative flex h-11 w-11 items-center justify-center rounded-full border transition-colors xl:hidden ${
             open
               ? "border-paper/30 bg-transparent text-paper hover:border-paper"
               : "border-line bg-paper-raised/80 text-ink hover:border-ink"
@@ -149,7 +149,7 @@ export function SiteHeader() {
             animate={{ clipPath: "circle(150% at calc(100% - 44px) 34px)" }}
             exit={{ clipPath: "circle(0% at calc(100% - 44px) 34px)" }}
             transition={{ duration: reduceMotion ? 0 : 0.6, ease: EASE_SETTLE }}
-            className="fixed inset-0 z-40 flex flex-col justify-between overflow-y-auto bg-charcoal px-6 pb-10 pt-24 lg:hidden"
+            className="fixed inset-0 z-40 flex flex-col justify-between overflow-y-auto bg-charcoal px-6 pb-10 pt-24 xl:hidden"
           >
             <nav className="flex flex-col">
               {allLinks.map((link, index) => {

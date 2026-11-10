@@ -2,9 +2,9 @@
 
 import { useSyncExternalStore } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { Check, ClipboardCheck, MessageCircle, RotateCcw } from "lucide-react";
+import { Check, ClipboardCheck, Mail, RotateCcw } from "lucide-react";
 import { LinkButton } from "@/components/ui/button";
-import { buildWhatsAppLink } from "@/lib/whatsapp";
+import { buildMailLink } from "@/lib/contact";
 import { EASE_SETTLE } from "@/lib/motion";
 import { cn } from "@/lib/cn";
 import { CHECKLIST, CHECKLIST_TOTAL } from "@/lib/data/checklist";
@@ -141,8 +141,8 @@ export function DocumentChecklist() {
             <p className="text-xs leading-relaxed text-paper/50">
               Requirements differ by embassy and program. We&rsquo;ll confirm your exact list.
             </p>
-            <LinkButton href={buildWhatsAppLink(message)} variant="primary" className="w-full">
-              <MessageCircle size={16} /> Send my progress to an advisor
+            <LinkButton href={buildMailLink(message)} variant="primary" className="w-full">
+              <Mail size={16} /> Send my progress to an advisor
             </LinkButton>
           </div>
         </div>

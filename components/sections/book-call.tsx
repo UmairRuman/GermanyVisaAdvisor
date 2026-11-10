@@ -8,7 +8,7 @@ import { Grain } from "@/components/ui/grain";
 import { SuccessBurst } from "@/components/ui/success-burst";
 import { Button } from "@/components/ui/button";
 import { fieldInputClass } from "@/components/ui/field";
-import { buildWhatsAppLink } from "@/lib/whatsapp";
+import { CONTACT_EMAIL, buildMailLink } from "@/lib/contact";
 import { EASE_SETTLE } from "@/lib/motion";
 import { cn } from "@/lib/cn";
 import { DEFAULT_PKR_PER_EUR } from "@/lib/data/tools";
@@ -21,6 +21,47 @@ import {
 } from "@/lib/booking";
 
 type Day = { date: string; available: boolean };
+
+const QUALIFICATIONS = ["Matric", "Intermediate", "Bachelor", "Master", "Other"];
+const DEGREES = ["Bachelor", "Master", "PhD"];
+const LANGUAGE_TESTS = ["Not taken yet", "IELTS", "TOEFL", "PTE", "Duolingo English Test", "German (Goethe / telc / TestDaF)"];
+const INTAKES = ["Winter", "Summer"];
+
+type FormState = {
+  name: string;
+  email: string;
+  phone: string;
+  city: string;
+  qualification: string;
+  score: string;
+  degree: string;
+  fieldOfStudy: string;
+  languageTest: string;
+  languageScore: string;
+  intakeSeason: string;
+  intakeYear: string;
+  topic: string;
+  consent: boolean;
+  company: string;
+};
+
+const INITIAL_FORM: FormState = {
+  name: "",
+  email: "",
+  phone: "",
+  city: "",
+  qualification: "Bachelor",
+  score: "",
+  degree: "Master",
+  fieldOfStudy: "",
+  languageTest: "Not taken yet",
+  languageScore: "",
+  intakeSeason: "",
+  intakeYear: "",
+  topic: "",
+  consent: false,
+  company: "",
+};
 
 const inputClass = cn(fieldInputClass, "border-paper/15 bg-paper/10 text-paper placeholder:text-paper/35");
 
@@ -55,7 +96,7 @@ export function BookCall() {
   const [days, setDays] = useState<Day[] | null>(null);
   const [loadFailed, setLoadFailed] = useState(false);
   const [date, setDate] = useState<string | null>(null);
-  const [form, setForm] = useState({ name: "", email: "", whatsapp: "", topic: "", company: "" });
+  const [form, setForm] = useState<FormState>(INITIAL_FORM);
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -88,12 +129,22 @@ export function BookCall() {
 
   const firstFree = days?.find((d) => d.available);
   const chosen = days?.find((d) => d.date === date && d.available);
-  const emailOk = /^\S+@\S+\.\S+$/.test(form.email.trim());
-  const ready = Boolean(chosen) && form.name.trim().length >= 2 && emailOk && form.whatsapp.trim().length >= 7;
+  const emailOk = /^S+@S+.S+$/.test(form.email.trim());
+  const ready =
+    Boolean(chosen) &&
+    form.name.trim().length >= 2 &&
+    emailOk &&
+    form.phone.trim().length >= 7 &&
+    form.city.trim().length >= 2 &&
+    form.score.trim().length >= 1 &&
+    form.fieldOfStudy.trim().length >= 2 &&
+    form.consent;
   const pkr = (CONSULTATION_FEE_EUR * DEFAULT_PKR_PER_EUR).toLocaleString("en-US");
 
-  const update = (key: keyof typeof form) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setForm((previous) => ({ ...previous, [key]: event.target.value }));
+  const update =
+    (key: keyof FormState) =>
+    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+      setForm((previous) => ({ ...previous, [key]: event.target.value }));
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -104,7 +155,7 @@ export function BookCall() {
       const response = await fetch("/api/booking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, date: chosen.date }),
+        body: JSON.stringify({ ...form, intake: [form.intakeSeason, form.intakeYear.trim()].filter(Boolean).join(" "), date: chosen.date }),
       });
       if (response.ok) {
         setStatus("done");
@@ -117,7 +168,7 @@ export function BookCall() {
         void loadDays(); // someone else took the day — show the fresh list
       }
     } catch {
-      setError("We couldn't reach the server. Please check your connection or message us on WhatsApp.");
+      setError(`We couldn't reach the server. Please check your connection or email us at ${CONTACT_EMAIL}.`);
     }
     setStatus("idle");
   }
@@ -169,7 +220,6 @@ export function BookCall() {
                       className="min-h-[340px]"
                       title="Request sent"
                       description={`We emailed ${form.email.trim()}. Our advisor will confirm your slot shortly — you'll get another email as soon as they do.`}
-                      showWhatsApp={false}
                     />
                   </div>
                 ) : (
@@ -244,8 +294,23 @@ export function BookCall() {
                     <div className="mt-3 grid gap-3 sm:grid-cols-2">
                       <input value={form.name} onChange={update("name")} placeholder="Full name" autoComplete="name" className={inputClass} aria-label="Full name" />
                       <input value={form.email} onChange={update("email")} placeholder="Email address" type="email" inputMode="email" autoComplete="email" className={inputClass} aria-label="Email address" />
-                      <input value={form.whatsapp} onChange={update("whatsapp")} placeholder="WhatsApp number" type="tel" inputMode="tel" autoComplete="tel" className={cn(inputClass, "sm:col-span-2")} aria-label="WhatsApp number" />
-                      <textarea value={form.topic} onChange={update("topic")} placeholder="What would you like help with? (optional)" rows={3} className={cn(inputClass, "sm:col-span-2")} aria-label="Topic" />
+                      <input value={form.phone} onChange={update("phone")} placeholder="Phone number (+92 3xx xxxxxxx)" type="tel" inputMode="tel" autoComplete="tel" className={inputClass} aria-label="Phone number" />
+                      <input value={form.city} onChange={update("city")} placeholder="City" autoComplete="address-level2" className={inputClass} aria-label="City" />
+                      <select value={form.qualification} onChange={update("qualification")} className={cn(inputClass, "[&>option]:text-ink")} aria-label="Last qualification">{QUALIFICATIONS.map((o) => <option key={o} value={o}>{o}</option>)}</select>
+                      <input value={form.score} onChange={update("score")} placeholder="CGPA / percentage (e.g. 3.2 / 75%)"  className={inputClass} aria-label="CGPA or percentage" />
+                      <select value={form.degree} onChange={update("degree")} className={cn(inputClass, "[&>option]:text-ink")} aria-label="Desired degree">{DEGREES.map((o) => <option key={o} value={o}>{o}</option>)}</select>
+                      <input value={form.fieldOfStudy} onChange={update("fieldOfStudy")} placeholder="Field of study (e.g. Computer Science)"  className={inputClass} aria-label="Field of study" />
+                      <select value={form.languageTest} onChange={update("languageTest")} className={cn(inputClass, "[&>option]:text-ink")} aria-label="Language test">{LANGUAGE_TESTS.map((o) => <option key={o} value={o}>{o}</option>)}</select>
+                      <input value={form.languageScore} onChange={update("languageScore")} placeholder="Language score (optional)"  className={inputClass} aria-label="Language score (optional)" />
+                      <select value={form.intakeSeason} onChange={update("intakeSeason")} className={cn(inputClass, "[&>option]:text-ink")} aria-label="Intake"><option value="">Intake (optional)</option>{INTAKES.map((o) => <option key={o} value={o}>{o}</option>)}</select>
+                      <input value={form.intakeYear} onChange={update("intakeYear")} placeholder="Intake year, e.g. 2027" inputMode="numeric" maxLength={4} className={inputClass} aria-label="Intake year, e.g. 2027" />
+                      <textarea value={form.topic} onChange={update("topic")} placeholder="What would you like help with? (optional)" rows={3} maxLength={500} className={cn(inputClass, "sm:col-span-2")} aria-label="Message" />
+                      <label className="flex items-start gap-2.5 text-xs leading-relaxed text-paper/65 sm:col-span-2">
+                        <input type="checkbox" checked={form.consent} onChange={(e) => setForm((p) => ({ ...p, consent: e.target.checked }))} className="mt-0.5 h-4 w-4 shrink-0 accent-[#b98a2e]" />
+                        <span>
+                          I agree to the privacy policy and the cancellation and refund policy.
+                        </span>
+                      </label>
                       {/* Honeypot — hidden from people, tempting to bots */}
                       <input value={form.company} onChange={update("company")} tabIndex={-1} autoComplete="off" aria-hidden className="absolute -left-[9999px] h-0 w-0 opacity-0" />
                     </div>
@@ -269,8 +334,8 @@ export function BookCall() {
                     {error && (
                       <p role="alert" className="mt-4 rounded-2xl border border-[#ff8a7e]/30 bg-[#ff8a7e]/10 px-4 py-3 text-sm font-semibold text-[#ffb4ab]">
                         {error}{" "}
-                        <a href={buildWhatsAppLink("Hi GermanyChalo! I'd like to book a counselling session.")} target="_blank" rel="noopener noreferrer" className="underline">
-                          Message us on WhatsApp
+                        <a href={buildMailLink("Hi, I would like to book a counselling session.", "Appointment request")} className="underline">
+                          Email us instead
                         </a>
                       </p>
                     )}

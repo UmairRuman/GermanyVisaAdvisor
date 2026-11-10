@@ -10,9 +10,9 @@ import {
   useTransform,
   type MotionValue,
 } from "motion/react";
-import { ArrowRight, BadgeCheck, FileCheck2, GraduationCap, MessageCircle, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight, BadgeCheck, FileCheck2, GraduationCap, ShieldCheck, Sparkles } from "lucide-react";
 import { EASE_SETTLE } from "@/lib/motion";
-import { buildWhatsAppLink } from "@/lib/whatsapp";
+import { BOOKING_PATH } from "@/lib/contact";
 import { SERVICES } from "@/lib/data/services";
 import { LinkButton } from "@/components/ui/button";
 import { Magnetic } from "@/components/ui/magnetic";
@@ -234,15 +234,14 @@ export function Hero() {
               className="mt-9 flex flex-wrap items-center gap-4"
             >
               <Magnetic className="block w-full sm:inline-block sm:w-auto">
-                <LinkButton href="/contact" variant="primary" className="w-full px-7 py-4 sm:w-auto">
-                  Get Your Free Assessment
+                <LinkButton href={BOOKING_PATH} variant="primary" className="w-full px-7 py-4 sm:w-auto">
+                  Book Appointment
                   <ArrowRight size={16} />
                 </LinkButton>
               </Magnetic>
               <Magnetic className="block w-full sm:inline-block sm:w-auto">
-                <LinkButton href={buildWhatsAppLink()} variant="secondary" className="w-full px-7 py-4 sm:w-auto">
-                  <MessageCircle size={16} className="text-[#1fae54]" />
-                  Chat on WhatsApp
+                <LinkButton href="/contact" variant="secondary" className="w-full px-7 py-4 sm:w-auto">
+                  Free Profile Check
                 </LinkButton>
               </Magnetic>
             </motion.div>

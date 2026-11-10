@@ -5,7 +5,7 @@ import {
   ClipboardList,
   Home,
   Languages,
-  MessageCircle,
+  CalendarCheck,
   PlaneTakeoff,
   Wallet,
   type LucideIcon,
@@ -17,7 +17,7 @@ import { Reveal } from "@/components/reveal";
 import { Accordion } from "@/components/ui/accordion";
 import { Grain } from "@/components/ui/grain";
 import { LinkButton } from "@/components/ui/button";
-import { buildWhatsAppLink } from "@/lib/whatsapp";
+import { BOOKING_PATH } from "@/lib/contact";
 import { FAQS } from "@/lib/data/faqs";
 import { JsonLd } from "@/components/json-ld";
 
@@ -149,8 +149,8 @@ export default function ResourcesPage() {
               <p className="text-sm text-ink-muted">
                 Still have a question that&rsquo;s specific to your profile?
               </p>
-              <LinkButton href={buildWhatsAppLink()} variant="primary">
-                <MessageCircle size={16} /> Ask Us on WhatsApp
+              <LinkButton href={BOOKING_PATH} variant="primary">
+                <CalendarCheck size={16} /> Book Appointment
               </LinkButton>
             </div>
           </Reveal>

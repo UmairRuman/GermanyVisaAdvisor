@@ -49,7 +49,7 @@ const detailRows = (b: Booking) => {
   const when = `${describeDate(b.date).full}, ${BOOKING_TIME_LABEL} ${BOOKING_TIME_ZONE_LABEL}`;
   const row = (label: string, value: string) =>
     `<tr><td style="padding:6px 12px 6px 0;color:#7a7168;vertical-align:top">${label}</td><td style="padding:6px 0"><strong>${escapeHtml(value)}</strong></td></tr>`;
-  return `<table style="border-collapse:collapse;font-size:14px">${row("When", when)}${row("Fee", `€${CONSULTATION_FEE_EUR}`)}${row("Name", b.name)}${row("Email", b.email)}${row("WhatsApp", b.whatsapp)}${b.topic ? row("Topic", b.topic) : ""}</table>`;
+  return `<table style="border-collapse:collapse;font-size:14px">${row("When", when)}${row("Fee", `€${CONSULTATION_FEE_EUR}`)}${row("Name", b.name)}${row("Email", b.email)}${row("Phone", b.phone)}${row("City", b.city)}${row("Last qualification", b.qualification)}${row("CGPA / percentage", b.score)}${row("Desired degree", b.degree)}${row("Field of study", b.fieldOfStudy)}${b.languageTest && b.languageTest !== "Not taken yet" ? row("Language test", `${b.languageTest}${b.languageScore ? ` — ${b.languageScore}` : ""}`) : ""}${b.intake ? row("Intake", b.intake) : ""}${b.topic ? row("Message", b.topic) : ""}</table>`;
 };
 
 const button = (href: string, label: string, color: string) =>
@@ -95,7 +95,7 @@ export async function sendStudentDecision(b: Booking) {
       html: layout(
         "Your session is confirmed ✓",
         `${detailRows(b)}
-         <p style="font-size:14px;line-height:1.6">We will contact you on WhatsApp (${escapeHtml(b.whatsapp)}) with the payment details for the €${CONSULTATION_FEE_EUR} session fee and the meeting link. Please keep that time free.</p>`,
+         <p style="font-size:14px;line-height:1.6">We will contact you by email (${escapeHtml(b.email)}) or phone (${escapeHtml(b.phone)}) with the payment details for the €${CONSULTATION_FEE_EUR} session fee and the meeting link. Please keep that time free.</p>`,
       ),
     });
   } else {

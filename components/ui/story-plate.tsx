@@ -1,6 +1,6 @@
 import { BadgeCheck } from "lucide-react";
 import { Grain } from "@/components/ui/grain";
-import type { Story } from "@/lib/data/stories";
+type Story = { initials: string; badge: string };
 
 // Initials stand in for a photo until real, consented student photography exists (see
 // lib/data/stories.ts) — this gives that placeholder a tactile, art-directed duotone+grain

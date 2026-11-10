@@ -7,7 +7,7 @@ import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { LinkButton } from "@/components/ui/button";
 import { StoryPlate } from "@/components/ui/story-plate";
-import { STORIES } from "@/lib/data/stories";
+import { REVIEWS, reviewInitials } from "@/lib/data/reviews";
 import { EASE_SETTLE } from "@/lib/motion";
 
 const AUTOPLAY_MS = 6000;
@@ -16,10 +16,11 @@ export function SuccessTeaser() {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const reduceMotion = useReducedMotion();
-  const story = STORIES[index];
+  const review = REVIEWS[index];
+  const initials = reviewInitials(review.name);
 
   function go(delta: number) {
-    setIndex((i) => (i + delta + STORIES.length) % STORIES.length);
+    setIndex((i) => (i + delta + REVIEWS.length) % REVIEWS.length);
   }
 
   return (
@@ -59,7 +60,7 @@ export function SuccessTeaser() {
                 exit={reduceMotion ? { opacity: 1 } : { opacity: 0 }}
                 transition={{ duration: reduceMotion ? 0 : 0.4, ease: EASE_SETTLE }}
               >
-                <StoryPlate story={story} className="h-full" />
+                <StoryPlate story={{ initials, badge: "Student Review" }} className="h-full" />
               </motion.div>
             </AnimatePresence>
 
@@ -80,19 +81,16 @@ export function SuccessTeaser() {
                   exit={reduceMotion ? { opacity: 1 } : { opacity: 0, y: -10 }}
                   transition={{ duration: reduceMotion ? 0 : 0.4, ease: EASE_SETTLE }}
                 >
-                  <p className="font-display text-2xl leading-snug text-ink sm:text-3xl">
-                    &ldquo;{story.quote}&rdquo;
+                  <p className="font-display text-lg leading-relaxed text-ink sm:text-xl">
+                    &ldquo;{review.quote}&rdquo;
                   </p>
                   <div className="mt-6 flex flex-wrap items-center gap-3">
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-charcoal font-display text-sm font-semibold text-paper">
-                      {story.initials}
+                      {initials}
                     </span>
-                    <div>
-                      <p className="text-sm font-bold text-ink">{story.name}</p>
-                      <p className="text-xs text-ink-muted">{story.program}</p>
-                    </div>
+                    <p className="text-sm font-bold text-ink">{review.name}</p>
                     <span className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-gold/40 bg-gold/10 px-3 py-1.5 text-xs font-bold text-ink">
-                      <BadgeCheck size={13} className="text-gold" /> {story.badge}
+                      <BadgeCheck size={13} className="text-gold" /> Student Review
                     </span>
                   </div>
                 </motion.div>
@@ -114,21 +112,21 @@ export function SuccessTeaser() {
               </div>
 
               <div className="relative mt-5 flex items-center justify-between gap-4">
-                <div className="flex flex-wrap items-center gap-2">
-                  {STORIES.map((s, i) => (
+                <div className="flex flex-wrap items-center">
+                  {REVIEWS.map((r, i) => (
                     <button
-                      key={s.initials}
+                      key={r.name}
                       type="button"
                       onClick={() => setIndex(i)}
-                      aria-label={`Show ${s.name}'s story`}
+                      aria-label={`Show ${r.name}'s review`}
                       aria-current={i === index}
-                      className={`flex h-10 w-10 items-center justify-center rounded-full border-2 text-[11px] font-bold transition-all duration-300 sm:h-9 sm:w-9 sm:text-xs ${
-                        i === index
-                          ? "scale-110 border-brick text-brick"
-                          : "border-line text-ink-muted/60 hover:border-ink-muted"
-                      }`}
+                      className="flex h-6 w-4 items-center justify-center"
                     >
-                      {s.initials}
+                      <span
+                        className={`h-2 rounded-full transition-all duration-300 ${
+                          i === index ? "w-5 bg-brick" : "w-2 bg-line"
+                        }`}
+                      />
                     </button>
                   ))}
                 </div>

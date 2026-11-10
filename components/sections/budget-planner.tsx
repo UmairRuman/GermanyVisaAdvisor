@@ -2,10 +2,10 @@
 
 import { useState, type CSSProperties } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowRight, Info, MessageCircle, PiggyBank } from "lucide-react";
+import { ArrowRight, Info, Mail, PiggyBank } from "lucide-react";
 import { LinkButton } from "@/components/ui/button";
 import { LiveNumber } from "@/components/ui/live-number";
-import { buildWhatsAppLink } from "@/lib/whatsapp";
+import { buildMailLink } from "@/lib/contact";
 import { EASE_SETTLE } from "@/lib/motion";
 import { cn } from "@/lib/cn";
 import { BLOCKED_ACCOUNT_MONTHLY_EUR, BUDGET_CATEGORIES, CITY_TIERS, type CityTier } from "@/lib/data/tools";
@@ -169,8 +169,8 @@ export function BudgetPlanner() {
               <Info size={15} className="mt-0.5 shrink-0 text-gold" />
               <p>Rough estimates only. Real costs vary by city, housing type and lifestyle.</p>
             </div>
-            <LinkButton href={buildWhatsAppLink(message)} variant="primary" className="w-full">
-              <MessageCircle size={16} /> Plan my costs with an advisor <ArrowRight size={16} />
+            <LinkButton href={buildMailLink(message)} variant="primary" className="w-full">
+              <Mail size={16} /> Plan my costs with an advisor <ArrowRight size={16} />
             </LinkButton>
           </div>
         </div>

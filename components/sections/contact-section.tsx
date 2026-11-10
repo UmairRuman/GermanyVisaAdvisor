@@ -5,17 +5,17 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { SuccessBurst } from "@/components/ui/success-burst";
-import { ArrowRight, Lock, Mail, MessageCircle, type LucideIcon } from "lucide-react";
+import { ArrowRight, Lock, Mail, CalendarCheck, type LucideIcon } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import { Field, fieldInputClass } from "@/components/ui/field";
 import { Button, LinkButton } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { buildWhatsAppLink } from "@/lib/whatsapp";
+import { BOOKING_PATH, CONTACT_EMAIL, buildMailLink } from "@/lib/contact";
 import { SocialIconRow } from "@/components/social-links";
 
 const schema = z.object({
   name: z.string().min(2, "Enter your full name"),
-  whatsapp: z.string().min(7, "Enter a valid WhatsApp number"),
+  phone: z.string().min(7, "Enter a valid phone number"),
   qualification: z.string().min(2, "Required"),
   fieldOfStudy: z.string().min(2, "Required"),
   score: z.string().min(1, "Required"),
@@ -46,15 +46,15 @@ type ContactCard = {
 // TODO: client to provide the real email (see docs/04-tech-stack.md). Office card removed for now.
 const CONTACT_CARDS: ContactCard[] = [
   {
-    icon: MessageCircle,
-    title: "WhatsApp",
-    description: "Fastest way to start a conversation.",
-    action: { label: "Open WhatsApp", href: buildWhatsAppLink() },
+    icon: CalendarCheck,
+    title: "Book Appointment",
+    description: "A paid one-to-one session with an advisor.",
+    action: { label: "Book Appointment", href: BOOKING_PATH },
   },
   {
     icon: Mail,
     title: "Email",
-    description: "hello@germanychalo.com",
+    description: CONTACT_EMAIL,
   },
 ];
 
@@ -79,14 +79,14 @@ export function ContactSection() {
       `CGPA / Percentage: ${data.score}`,
       `Desired Degree: ${data.degree}`,
       `Language Test: ${data.languageTest}${data.languageScore ? ` — ${data.languageScore}` : ""}`,
-      `WhatsApp: ${data.whatsapp}`,
+      `Phone: ${data.phone}`,
       data.message ? `Message: ${data.message}` : undefined,
     ]
       .filter(Boolean)
       .join("\n");
 
     setSubmitted(true);
-    window.open(buildWhatsAppLink(message), "_blank", "noopener,noreferrer");
+    window.open(buildMailLink(message, "Free profile check request"), "_self");
   }
 
   return (
@@ -129,7 +129,7 @@ export function ContactSection() {
             ) : (
               <form onSubmit={handleSubmit(onSubmit)}>
                 <p className="text-xs font-bold uppercase tracking-wide text-brick">
-                  Free Profile Evaluation
+                  Free Profile Check
                 </p>
                 <h2 className="mt-2 font-display text-3xl font-semibold text-ink sm:text-4xl">
                   Tell us about yourself.
@@ -138,14 +138,14 @@ export function ContactSection() {
                   <Field label="Name" error={errors.name?.message}>
                     <input className={fieldInputClass} placeholder="Your full name" {...register("name")} />
                   </Field>
-                  <Field label="WhatsApp" error={errors.whatsapp?.message}>
+                  <Field label="Phone number" error={errors.phone?.message}>
                     <input
                       className={fieldInputClass}
                       type="tel"
                       inputMode="tel"
                       autoComplete="tel"
                       placeholder="+92 3xx xxxxxxx"
-                      {...register("whatsapp")}
+                      {...register("phone")}
                     />
                   </Field>
                   <Field label="Qualification" error={errors.qualification?.message}>

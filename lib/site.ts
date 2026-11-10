@@ -20,7 +20,10 @@ export const SOCIAL_LINKS: { id: SocialId; label: string; cta: string; href: str
 // Walkthrough video: how to open a blocked account (opened from the calculator).
 export const BLOCKED_ACCOUNT_VIDEO_URL = "https://youtu.be/5M8bFwaeKn8";
 
-// TODO: client to confirm — shown on the hero card and the About page.
+// TODO: client to confirm real figures. Set VISAS_APPROVED / YEARS_EXPERIENCE once known; they stay hidden while null.
+export const VISAS_APPROVED: number | null = null;
+export const YEARS_EXPERIENCE: number | null = null;
+
 export const STUDENTS_GUIDED = 500;
 
 export const SITE_DESCRIPTION =

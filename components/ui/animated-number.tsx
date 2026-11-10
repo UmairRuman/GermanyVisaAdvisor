@@ -8,7 +8,7 @@ export function AnimatedNumber({ value, suffix = "" }: { value: number; suffix?:
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-40px" });
   const reduceMotion = useReducedMotion();
-  const [display, setDisplay] = useState(reduceMotion ? value : 0);
+  const [display, setDisplay] = useState(value);
 
   useEffect(() => {
     if (!isInView || reduceMotion) return;

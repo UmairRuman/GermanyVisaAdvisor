@@ -2,13 +2,13 @@
 
 import { useState, type CSSProperties } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowRight, Landmark, Info, MessageCircle, Play } from "lucide-react";
+import { ArrowRight, Landmark, Info, Mail, Play } from "lucide-react";
 import { BLOCKED_ACCOUNT_VIDEO_URL, YOUTUBE_URL } from "@/lib/site";
 import { LinkButton } from "@/components/ui/button";
 import { Grain } from "@/components/ui/grain";
 import { LiveNumber } from "@/components/ui/live-number";
 import { fieldInputClass } from "@/components/ui/field";
-import { buildWhatsAppLink } from "@/lib/whatsapp";
+import { buildMailLink } from "@/lib/contact";
 import { EASE_SETTLE } from "@/lib/motion";
 import {
   BLOCKED_ACCOUNT_MAX_MONTHS,
@@ -152,12 +152,12 @@ export function BlockedAccountCalculator() {
             <Play size={15} /> Watch our guides on YouTube
           </a>
           <a
-            href={buildWhatsAppLink(message)}
+            href={buildMailLink(message)}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-1.5 text-xs font-bold text-paper/60 transition-colors hover:text-paper"
           >
-            <MessageCircle size={13} /> Or ask an advisor on WhatsApp
+            <Mail size={13} /> Or email an advisor
           </a>
         </div>
       </div>

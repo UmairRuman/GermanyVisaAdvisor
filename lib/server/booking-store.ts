@@ -8,7 +8,15 @@ export type Booking = {
   date: string; // YYYY-MM-DD, Pakistan time
   name: string;
   email: string;
-  whatsapp: string;
+  phone: string;
+  city: string;
+  qualification: string;
+  score: string;
+  degree: string;
+  fieldOfStudy: string;
+  languageTest: string;
+  languageScore: string;
+  intake: string;
   topic: string;
   status: BookingStatus;
   createdAt: string;

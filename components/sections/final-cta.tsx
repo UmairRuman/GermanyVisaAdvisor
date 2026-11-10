@@ -2,13 +2,13 @@
 
 import { useRef } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { ArrowRight, MessageCircle } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import { LinkButton } from "@/components/ui/button";
 import { Magnetic } from "@/components/ui/magnetic";
 import { Marquee } from "@/components/ui/marquee";
 import { SplitText } from "@/components/ui/split-text";
-import { buildWhatsAppLink } from "@/lib/whatsapp";
+import { BOOKING_PATH } from "@/lib/contact";
 import { Grain } from "@/components/ui/grain";
 
 export function FinalCta() {
@@ -49,13 +49,13 @@ export function FinalCta() {
         <Reveal delay={0.3}>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <Magnetic className="block w-full sm:inline-block sm:w-auto">
-              <LinkButton href="/contact" variant="primary" className="w-full px-8 py-4 sm:w-auto">
-                Get Free Assessment <ArrowRight size={16} />
+              <LinkButton href={BOOKING_PATH} variant="primary" className="w-full px-8 py-4 sm:w-auto">
+                Book Appointment <ArrowRight size={16} />
               </LinkButton>
             </Magnetic>
             <Magnetic className="block w-full sm:inline-block sm:w-auto">
-              <LinkButton href={buildWhatsAppLink()} variant="dark-outline" className="w-full px-8 py-4 sm:w-auto">
-                <MessageCircle size={16} /> WhatsApp Us
+              <LinkButton href="/contact" variant="dark-outline" className="w-full px-8 py-4 sm:w-auto">
+                Free Profile Check
               </LinkButton>
             </Magnetic>
           </div>

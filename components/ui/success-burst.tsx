@@ -1,10 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
-import { MessageCircle } from "lucide-react";
 import { EASE_SETTLE } from "@/lib/motion";
-import { LinkButton } from "@/components/ui/button";
-import { buildWhatsAppLink } from "@/lib/whatsapp";
 
 const PARTICLES = Array.from({ length: 16 }, (_, i) => {
   const angle = (i / 16) * Math.PI * 2;
@@ -18,17 +15,15 @@ const PARTICLES = Array.from({ length: 16 }, (_, i) => {
 });
 
 // Drawn-on checkmark inside a ring, with a small confetti burst. Shown after the profile
-// form is handed to WhatsApp.
+// form is submitted.
 export function SuccessBurst({
   className = "min-h-[380px]",
-  title = "Opening WhatsApp…",
-  description = "If it didn’t open automatically, message us directly and we’ll pick up right from there.",
-  showWhatsApp = true,
+  title = "Request received",
+  description = "Thank you. We will reply within 24 hours by email.",
 }: {
   className?: string;
   title?: string;
   description?: string;
-  showWhatsApp?: boolean;
 }) {
   const reduceMotion = useReducedMotion();
 
@@ -82,11 +77,6 @@ export function SuccessBurst({
       >
         <h3 className="mt-5 font-display text-2xl font-semibold text-ink">{title}</h3>
         <p className="mx-auto mt-2 max-w-sm text-sm text-ink-muted">{description}</p>
-        {showWhatsApp && (
-          <LinkButton href={buildWhatsAppLink()} variant="secondary" className="mt-5">
-            <MessageCircle size={16} className="text-[#1fae54]" /> Open WhatsApp
-          </LinkButton>
-        )}
       </motion.div>
     </div>
   );

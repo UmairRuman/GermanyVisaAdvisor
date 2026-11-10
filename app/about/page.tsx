@@ -250,7 +250,7 @@ export default function AboutPage() {
                   <h2 className="mt-2 font-display text-3xl font-semibold">Mr. Shahid Ali</h2>
                   <p className="mt-3 max-w-xl text-paper/65">
                     Guides students from Pakistan through university selection, applications and the visa
-                    process, and shares free step-by-step guides on YouTube and WhatsApp so every student can
+                    process, and shares free step-by-step guides on YouTube and our WhatsApp channel so every student can
                     learn before they spend a rupee.
                   </p>
                   <SocialIconRow tone="dark" className="mt-5" />

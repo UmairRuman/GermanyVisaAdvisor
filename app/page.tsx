@@ -4,6 +4,7 @@ import { ConvictionBand } from "@/components/sections/conviction-band";
 import { ServicesTeaser } from "@/components/sections/services-teaser";
 import { ToolsTeaser } from "@/components/sections/tools-teaser";
 import { SuccessTeaser } from "@/components/sections/success-teaser";
+import { StatsBand } from "@/components/sections/stats-band";
 import { AssessmentForm } from "@/components/sections/assessment-form";
 import { FinalCta } from "@/components/sections/final-cta";
 
@@ -15,6 +16,7 @@ export default function Home() {
       <ConvictionBand />
       <ServicesTeaser />
       <ToolsTeaser />
+      <StatsBand />
       <SuccessTeaser />
       <AssessmentForm />
       <FinalCta />

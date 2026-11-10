@@ -6,7 +6,7 @@ advisor confirms or declines from the email. Slots are 12:00 PM Pakistan time, b
 
 ## Flow
 
-1. Student picks a day and submits name, email, WhatsApp and an optional topic.
+1. Student picks a day and submits name, email, phone, qualification details and an optional message.
 2. The day is **held for 24 hours** (so nobody else can take it) and two emails go out:
    - to the advisor, with **Confirm** and **Decline** buttons;
    - to the student, saying the request is waiting for confirmation.
@@ -41,4 +41,4 @@ confirm/decline links) and slots are kept in memory. Set `BOOKING_SECRET` to any
 ## Not included
 
 Online payment. The €25 fee is arranged after confirmation (the confirmation email says payment
-details follow on WhatsApp). A payment gateway can be added later.
+details follow by email). A payment gateway can be added later.

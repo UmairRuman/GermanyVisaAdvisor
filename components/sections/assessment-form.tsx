@@ -7,7 +7,7 @@ import { z } from "zod";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ArrowLeft, ArrowRight, Check, CheckCircle2, GraduationCap, Plane } from "lucide-react";
 import { Reveal } from "@/components/reveal";
-import { buildWhatsAppLink } from "@/lib/whatsapp";
+import { buildMailLink } from "@/lib/contact";
 import { Field, fieldInputClass } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Grain } from "@/components/ui/grain";
@@ -17,7 +17,7 @@ import { cn } from "@/lib/cn";
 
 const schema = z.object({
   name: z.string().min(2, "Enter your full name"),
-  whatsapp: z.string().min(7, "Enter a valid WhatsApp number"),
+  phone: z.string().min(7, "Enter a valid phone number"),
   qualification: z.string().min(2, "Required"),
   fieldOfStudy: z.string().min(2, "Required"),
   score: z.string().min(1, "Required"),
@@ -30,14 +30,14 @@ type FieldName = keyof FormValues;
 const DEGREES = ["Bachelor", "Master", "PhD"] as const;
 
 const STEPS: { label: string; fields: FieldName[] }[] = [
-  { label: "About you", fields: ["name", "whatsapp"] },
+  { label: "About you", fields: ["name", "phone"] },
   { label: "Your studies", fields: ["qualification", "fieldOfStudy", "score"] },
   { label: "Your goal", fields: ["degree"] },
 ];
 
 const TRUST_LINES = [
   "No obligation, no pressure",
-  "Reply within 24 hours on WhatsApp",
+  "Reply within 24 hours by email",
   "Your information stays private",
 ];
 
@@ -94,8 +94,7 @@ export function AssessmentForm() {
   }
 
   function onSubmit(data: FormValues) {
-    // No CRM/backend chosen yet (see docs/04-tech-stack.md) — hand the profile straight to
-    // WhatsApp, the primary channel this business already runs on.
+    // No CRM/backend chosen yet (see docs/04-tech-stack.md) — open the visitor's email app with the profile pre-filled.
     const message = [
       "Hi GermanyChalo! I'd like a free profile assessment.",
       "",
@@ -104,11 +103,11 @@ export function AssessmentForm() {
       `Field of Study: ${data.fieldOfStudy}`,
       `CGPA / Percentage: ${data.score}`,
       `Desired Degree: ${data.degree}`,
-      `WhatsApp: ${data.whatsapp}`,
+      `Phone: ${data.phone}`,
     ].join("\n");
 
     setSubmitted(true);
-    window.open(buildWhatsAppLink(message), "_blank", "noopener,noreferrer");
+    window.open(buildMailLink(message, "Free profile check request"), "_self");
   }
 
   return (
@@ -245,8 +244,8 @@ export function AssessmentForm() {
                             <Field label="Name" error={errors.name?.message}>
                               <input className={fieldInputClass} placeholder="Your full name" autoComplete="name" {...register("name")} />
                             </Field>
-                            <Field label="WhatsApp Number" error={errors.whatsapp?.message}>
-                              <input className={fieldInputClass} placeholder="+92 3xx xxxxxxx" type="tel" inputMode="tel" autoComplete="tel" {...register("whatsapp")} />
+                            <Field label="Phone number" error={errors.phone?.message}>
+                              <input className={fieldInputClass} placeholder="+92 3xx xxxxxxx" type="tel" inputMode="tel" autoComplete="tel" {...register("phone")} />
                             </Field>
                           </>
                         )}
@@ -325,7 +324,7 @@ export function AssessmentForm() {
                   </div>
                   <p className="mt-3 text-center text-xs text-ink-muted">
                     {isLast
-                      ? "Submitting opens WhatsApp with your details pre-filled, so we can pick up the conversation immediately."
+                      ? "Submitting opens your email app with your details pre-filled; send it and we will reply within 24 hours."
                       : `Step ${step + 1} of ${STEPS.length} — takes about a minute.`}
                   </p>
                 </>

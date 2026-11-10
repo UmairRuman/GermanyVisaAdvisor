@@ -7,7 +7,27 @@ import { mailIsConfigured, sendAdvisorRequest, sendStudentReceived } from "@/lib
 const schema = z.object({
   name: z.string().trim().min(2).max(80),
   email: z.string().trim().email().max(120),
-  whatsapp: z.string().trim().min(7).max(25),
+  phone: z
+    .string()
+    .trim()
+    .min(7)
+    .max(25)
+    // Pakistani numbers (+92 / 03xx) get a length check; other countries are accepted as-is.
+    .refine((v) => {
+      const digits = v.replace(/[\s-]/g, "");
+      if (/^(\+92|0092|92)/.test(digits)) return /^(\+92|0092|92)3\d{9}$/.test(digits);
+      if (/^03/.test(digits)) return /^03\d{9}$/.test(digits);
+      return /^\+?\d{7,15}$/.test(digits);
+    }, "Invalid phone number"),
+  city: z.string().trim().min(2).max(60),
+  qualification: z.enum(["Matric", "Intermediate", "Bachelor", "Master", "Other"]),
+  score: z.string().trim().min(1).max(30),
+  degree: z.enum(["Bachelor", "Master", "PhD"]),
+  fieldOfStudy: z.string().trim().min(2).max(80),
+  languageTest: z.string().trim().max(60).optional().default(""),
+  languageScore: z.string().trim().max(30).optional().default(""),
+  intake: z.string().trim().max(30).optional().default(""),
+  consent: z.literal(true),
   topic: z.string().trim().max(500).optional().default(""),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   // Honeypot: real visitors never see or fill this field; bots usually do.
@@ -19,10 +39,10 @@ const fail = (message: string, status: number) => Response.json({ error: message
 export async function POST(request: Request) {
   // Without email there is no way to reach the advisor — never take a booking we can't deliver.
   if (!mailIsConfigured && process.env.NODE_ENV === "production") {
-    return fail("Booking is temporarily unavailable. Please message us on WhatsApp.", 503);
+    return fail("Booking is temporarily unavailable. Please email us at info@germanychlo.com.", 503);
   }
   if (!storeIsPersistent && process.env.NODE_ENV === "production") {
-    return fail("Booking is temporarily unavailable. Please message us on WhatsApp.", 503);
+    return fail("Booking is temporarily unavailable. Please email us at info@germanychlo.com.", 503);
   }
 
   let input: z.infer<typeof schema>;
@@ -47,7 +67,15 @@ export async function POST(request: Request) {
     date: input.date,
     name: input.name,
     email: input.email,
-    whatsapp: input.whatsapp,
+    phone: input.phone,
+    city: input.city,
+    qualification: input.qualification,
+    score: input.score,
+    degree: input.degree,
+    fieldOfStudy: input.fieldOfStudy,
+    languageTest: input.languageTest,
+    languageScore: input.languageScore,
+    intake: input.intake,
     topic: input.topic,
     status: "pending",
     createdAt: new Date().toISOString(),
@@ -62,7 +90,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("advisor email failed", error);
     await declineBooking(booking); // release the day so it isn't locked with no request sent
-    return fail("We couldn't send your request. Please message us on WhatsApp.", 502);
+    return fail("We couldn't send your request. Please email us at info@germanychlo.com.", 502);
   }
 
   return Response.json({ ok: true });

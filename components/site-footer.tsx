@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { ArrowUp, ArrowUpRight, Mail, MessageCircle, Play } from "lucide-react";
+import { ArrowUp, ArrowUpRight, Mail, CalendarCheck, Play } from "lucide-react";
 import { YOUTUBE_URL } from "@/lib/site";
 import { NAV_LINKS } from "@/lib/nav";
-import { buildWhatsAppLink } from "@/lib/whatsapp";
+import { CONTACT_EMAIL, BOOKING_PATH } from "@/lib/contact";
 import { Grain } from "@/components/ui/grain";
 import { SocialIconRow } from "@/components/social-links";
 
@@ -32,7 +32,7 @@ export function SiteFooter() {
             href="/contact"
             className="group mt-6 inline-flex items-center gap-2 rounded-full border border-paper/20 px-5 py-2.5 text-sm font-bold text-paper transition-colors duration-300 hover:border-paper hover:bg-paper hover:text-charcoal"
           >
-            Free Assessment
+            Free Profile Check
             <ArrowUpRight size={15} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
           </Link>
         </div>
@@ -53,18 +53,13 @@ export function SiteFooter() {
 
         <div className="text-sm">
           <p className="mb-3 text-xs font-bold uppercase tracking-wide text-paper/35">Get in touch</p>
-          {/* TODO: client to provide real email, WhatsApp number, office address */}
-          <a href="mailto:hello@germanychalo.com" className="flex items-center gap-2 py-1 font-semibold text-paper/80 transition-colors hover:text-paper">
-            <Mail size={15} className="text-gold" /> hello@germanychalo.com
+          {/* TODO: client to provide phone number and office address */}
+          <a href={`mailto:${CONTACT_EMAIL}`} className="flex items-center gap-2 py-1 font-semibold text-paper/80 transition-colors hover:text-paper">
+            <Mail size={15} className="text-gold" /> {CONTACT_EMAIL}
           </a>
-          <a
-            href={buildWhatsAppLink()}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 py-1 font-semibold text-paper/80 transition-colors hover:text-paper"
-          >
-            <MessageCircle size={15} className="text-gold" /> Chat on WhatsApp
-          </a>
+          <Link href={BOOKING_PATH} className="flex items-center gap-2 py-1 font-semibold text-paper/80 transition-colors hover:text-paper">
+            <CalendarCheck size={15} className="text-gold" /> Book Appointment
+          </Link>
           <a
             href={YOUTUBE_URL}
             target="_blank"

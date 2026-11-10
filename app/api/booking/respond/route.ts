@@ -62,7 +62,7 @@ export async function POST(request: Request) {
     console.error("decision email failed", error);
     return page(
       "Saved — but the email failed",
-      `${summary(updated.name, updated.date)}<p>The booking is ${updated.status}, but we couldn't email the student. Please contact them: ${escapeHtml(updated.email)} / ${escapeHtml(updated.whatsapp)}.</p>`,
+      `${summary(updated.name, updated.date)}<p>The booking is ${updated.status}, but we couldn't email the student. Please contact them: ${escapeHtml(updated.email)} / ${escapeHtml(updated.phone)}.</p>`,
       502,
     );
   }
