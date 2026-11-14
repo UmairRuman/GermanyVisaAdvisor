@@ -8,8 +8,10 @@ export const BOOKING_TIME_ZONE_LABEL = "Pakistan time";
 export const BOOKING_LEAD_DAYS = 2;
 /** How many consecutive days are shown to pick from. */
 export const BOOKING_WINDOW_DAYS = 10;
-/** A request the advisor hasn't answered releases its slot after this long. */
-export const PENDING_HOLD_HOURS = 24;
+/** An unpaid request releases its slot after this many minutes. */
+export const PENDING_HOLD_MINUTES = 15;
+/** How many days the admin can see and block ahead of today. */
+export const ADMIN_WINDOW_DAYS = 30;
 
 // TODO: client to confirm the fee. Shown on the site and in every booking email.
 export const CONSULTATION_FEE_EUR = 25;
@@ -47,4 +49,15 @@ export function describeDate(dateKey: string) {
     month: fmt({ month: "short" }),
     full: fmt({ weekday: "long", day: "numeric", month: "long", year: "numeric" }),
   };
+}
+
+/** Days the admin can manage: from the first bookable day, ADMIN_WINDOW_DAYS in a row. */
+export function adminDates(now: Date = new Date()): string[] {
+  const first = addDays(todayInPakistan(now), BOOKING_LEAD_DAYS);
+  return Array.from({ length: ADMIN_WINDOW_DAYS }, (_, i) => addDays(first, i));
+}
+
+/** Short code the student writes on the bank transfer so we can match the payment. */
+export function paymentReference(bookingId: string): string {
+  return `GC-${bookingId.replace(/-/g, "").slice(0, 6).toUpperCase()}`;
 }

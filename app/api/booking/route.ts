@@ -1,8 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { isBookableDate } from "@/lib/booking";
-import { declineBooking, holdSlot, storeIsPersistent, underRateLimit, type Booking } from "@/lib/server/booking-store";
-import { mailIsConfigured, sendAdvisorRequest, sendStudentReceived } from "@/lib/server/booking-mail";
+import { cancelBooking, holdSlot, storeIsPersistent, underRateLimit, type Booking } from "@/lib/server/booking-store";
+import { mailIsConfigured, paymentDetailsConfigured, sendAdvisorRequest, sendStudentPaymentInstructions } from "@/lib/server/booking-mail";
 
 const schema = z.object({
   name: z.string().trim().min(2).max(80),
@@ -39,6 +39,9 @@ const fail = (message: string, status: number) => Response.json({ error: message
 export async function POST(request: Request) {
   // Without email there is no way to reach the advisor — never take a booking we can't deliver.
   if (!mailIsConfigured && process.env.NODE_ENV === "production") {
+    return fail("Booking is temporarily unavailable. Please email us at info@germanychlo.com.", 503);
+  }
+  if (!paymentDetailsConfigured && process.env.NODE_ENV === "production") {
     return fail("Booking is temporarily unavailable. Please email us at info@germanychlo.com.", 503);
   }
   if (!storeIsPersistent && process.env.NODE_ENV === "production") {
@@ -84,12 +87,13 @@ export async function POST(request: Request) {
   if (!(await holdSlot(booking))) return fail("Sorry, that day was just taken. Please pick another.", 409);
 
   try {
-    await sendAdvisorRequest(booking);
-    // The student's receipt is a courtesy — a failure here must not undo the booking.
-    await sendStudentReceived(booking).catch((error) => console.error("student email failed", error));
+    // The student gets the bank details first — that is what they must act on within 15 minutes.
+    await sendStudentPaymentInstructions(booking);
+    // The advisor notice is secondary: a failure here must not undo the booking.
+    await sendAdvisorRequest(booking).catch((error) => console.error("advisor email failed", error));
   } catch (error) {
-    console.error("advisor email failed", error);
-    await declineBooking(booking); // release the day so it isn't locked with no request sent
+    console.error("student email failed", error);
+    await cancelBooking(booking); // release the day so it isn't locked with no request sent
     return fail("We couldn't send your request. Please email us at info@germanychlo.com.", 502);
   }
 

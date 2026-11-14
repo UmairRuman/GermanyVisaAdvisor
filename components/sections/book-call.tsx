@@ -192,8 +192,7 @@ export function BookCall() {
                   Book a one-on-one session with our advisor.
                 </h2>
                 <p className="mt-4 text-paper/60">
-                  Pick a day and send your details. Our advisor confirms by email, and the slot is
-                  yours.
+                  Pick a day and send your details. We hold your slot for 15 minutes and email you the bank details. Pay within 15 minutes and our advisor confirms your session.
                 </p>
                 <div className="mt-6 inline-flex items-baseline gap-2 rounded-2xl border border-gold/30 bg-gold/10 px-4 py-3">
                   <span className="font-display text-3xl font-semibold text-gold">€{CONSULTATION_FEE_EUR}</span>
@@ -204,7 +203,9 @@ export function BookCall() {
                     "Around 20 minutes, one-on-one",
                     "Honest, practical advice",
                     `Booked at least ${BOOKING_LEAD_DAYS} days ahead`,
-                    "Confirmation sent to your email",
+                    "Slot held for 15 minutes while you pay",
+                    "Bank details and steps sent to your email",
+                    "Confirmation email once payment is checked",
                   ].map((line) => (
                     <li key={line} className="flex items-center gap-2">
                       <Check size={14} className="text-gold" strokeWidth={3} /> {line}
@@ -218,8 +219,8 @@ export function BookCall() {
                   <div className="text-ink [&_h3]:text-paper [&_p]:text-paper/70">
                     <SuccessBurst
                       className="min-h-[340px]"
-                      title="Request sent"
-                      description={`We emailed ${form.email.trim()}. Our advisor will confirm your slot shortly — you'll get another email as soon as they do.`}
+                      title="Slot reserved for 15 minutes"
+                      description={`We emailed the bank details and payment steps to ${form.email.trim()}. Pay within 15 minutes to keep your slot — after that it is released. Once we see your payment, our advisor confirms and you get a confirmation email. Check your spam folder if you don't see it.`}
                     />
                   </div>
                 ) : (
@@ -324,7 +325,7 @@ export function BookCall() {
                           transition={{ duration: 0.35, ease: EASE_SETTLE }}
                           className="mt-4 overflow-hidden text-sm text-paper/70"
                         >
-                          You&rsquo;re requesting <strong className="text-paper">{describeDate(chosen.date).full}</strong> at{" "}
+                          You&rsquo;re reserving <strong className="text-paper">{describeDate(chosen.date).full}</strong> at{" "}
                           <strong className="text-paper">{BOOKING_TIME_LABEL}</strong> for{" "}
                           <strong className="text-paper">€{CONSULTATION_FEE_EUR}</strong>.
                         </motion.p>
@@ -341,11 +342,11 @@ export function BookCall() {
                     )}
 
                     <Button type="submit" disabled={!ready || status === "sending"} className="mt-6 w-full">
-                      <Mail size={16} /> {status === "sending" ? "Sending…" : `Request this slot · €${CONSULTATION_FEE_EUR}`}{" "}
+                      <Mail size={16} /> {status === "sending" ? "Sending…" : `Reserve slot for 15 min · €${CONSULTATION_FEE_EUR}`}{" "}
                       {status !== "sending" && <ArrowRight size={16} />}
                     </Button>
                     <p className="mt-3 flex items-center justify-center gap-1.5 text-center text-xs text-paper/45">
-                      <ShieldCheck size={12} /> Nothing is charged now. We share payment details once your slot is confirmed.
+                      <ShieldCheck size={12} /> Nothing is charged on this site. You pay by bank transfer after reserving; the slot is yours for 15 minutes.
                     </p>
                   </form>
                 )}

@@ -22,7 +22,7 @@ const POLICIES = [
   },
   {
     question: "Cancellation and refund policy",
-    answer: "If we cannot confirm your slot, no payment is needed. Refund terms for confirmed sessions will be published here by the consultancy before launch.",
+    answer: "Your slot is held for 15 minutes after you reserve it. If the payment does not arrive in that time, the slot is released. If we cannot confirm a slot you have paid for, we refund you or move you to another day. Detailed refund terms will be published here by the consultancy before launch.",
   },
   {
     question: "Privacy policy",
@@ -46,7 +46,7 @@ export default function BookAppointmentPage() {
             <span className="text-brick">One To One.</span>
           </>
         }
-        description="Choose a day, tell us about your profile and we will confirm your session by email."
+        description="Choose a day and tell us about your profile. We hold the slot for 15 minutes while you pay by bank transfer, then confirm your session by email."
       />
       <BookCall />
       <section className="bg-paper py-20">
