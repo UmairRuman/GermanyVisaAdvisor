@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
-import { isBookableDate } from "@/lib/booking";
+import { BOOKING_TIMES, isBookableDate } from "@/lib/booking";
 import { cancelBooking, holdSlot, storeIsPersistent, underRateLimit, type Booking } from "@/lib/server/booking-store";
 import { mailIsConfigured, paymentDetailsConfigured, sendAdvisorRequest, sendStudentPaymentInstructions } from "@/lib/server/booking-mail";
 
@@ -30,6 +30,7 @@ const schema = z.object({
   consent: z.literal(true),
   topic: z.string().trim().max(500).optional().default(""),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  time: z.enum(BOOKING_TIMES),
   // Honeypot: real visitors never see or fill this field; bots usually do.
   company: z.string().optional(),
 });
@@ -68,6 +69,7 @@ export async function POST(request: Request) {
   const booking: Booking = {
     id: randomUUID(),
     date: input.date,
+    time: input.time,
     name: input.name,
     email: input.email,
     phone: input.phone,
@@ -84,7 +86,7 @@ export async function POST(request: Request) {
     createdAt: new Date().toISOString(),
   };
 
-  if (!(await holdSlot(booking))) return fail("Sorry, that day was just taken. Please pick another.", 409);
+  if (!(await holdSlot(booking))) return fail("Sorry, that time was just taken. Please pick another.", 409);
 
   try {
     // The student gets the bank details first — that is what they must act on within 15 minutes.

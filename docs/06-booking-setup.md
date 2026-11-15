@@ -1,6 +1,6 @@
 # Booking setup (paid counselling sessions, bank transfer)
 
-Sessions are 12:00 PM Pakistan time, bookable from 2 days ahead (rules in `lib/booking.ts`).
+Sessions are offered hourly from 12:00 PM to 11:00 PM Pakistan time (the advisor is in Germany) (edit `BOOKING_TIMES` in `lib/booking.ts`), bookable from 2 days ahead. Each time is held, booked and blocked separately.
 There is no online payment gateway: the student pays the €25 fee by bank transfer.
 
 ## Flow

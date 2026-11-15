@@ -235,14 +235,12 @@ export default function AboutPage() {
               <Grain opacity={0.06} blend="soft-light" />
               <div aria-hidden className="aurora-a pointer-events-none absolute -right-20 -top-20 h-80 w-80 rounded-full bg-gold/20 blur-[100px]" />
               <div className="relative grid items-center gap-8 lg:grid-cols-[auto_1fr_auto]">
-                {/* TODO: client to confirm the advisor's name and supply a real photo and short bio. */}
+                {/* TODO: client to confirm the advisor's name and short bio. */}
                 <div className="relative h-28 w-28 shrink-0">
-                  <div className="flex h-full w-full items-end justify-center overflow-hidden rounded-full bg-gradient-to-b from-[#d9cdb8] to-[#b9a98c] ring-4 ring-paper/15">
-                    <svg viewBox="0 0 48 56" className="h-full w-full text-charcoal/40" fill="currentColor" aria-hidden>
-                      <circle cx="24" cy="21" r="9" />
-                      <path d="M6 56c0-12 8-19 18-19s18 7 18 19z" />
-                    </svg>
-                  </div>
+                  <div className="h-full w-full overflow-hidden rounded-full ring-4 ring-paper/15">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/advisor.jpg" alt="Mr. Shahid Ali, your advisor" className="h-full w-full object-cover" />
+        </div>
                   <span className="absolute bottom-1 right-1 h-5 w-5 rounded-full border-[3px] border-charcoal bg-[#1fae54]" aria-hidden />
                 </div>
                 <div>

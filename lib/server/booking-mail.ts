@@ -1,12 +1,12 @@
 import nodemailer from "nodemailer";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 import {
-  BOOKING_TIME_LABEL,
   BOOKING_TIME_ZONE_LABEL,
   CONSULTATION_FEE_EUR,
   PENDING_HOLD_MINUTES,
   describeDate,
   paymentReference,
+  timeLabel,
 } from "@/lib/booking";
 import { DEFAULT_PKR_PER_EUR } from "@/lib/data/tools";
 import type { Booking } from "@/lib/server/booking-store";
@@ -62,7 +62,7 @@ const row = (label: string, value: string) =>
   `<tr><td style="padding:6px 12px 6px 0;color:#7a7168;vertical-align:top">${label}</td><td style="padding:6px 0"><strong>${escapeHtml(value)}</strong></td></tr>`;
 
 const whenText = (b: Booking) =>
-  `${describeDate(b.date).full}, ${BOOKING_TIME_LABEL} ${BOOKING_TIME_ZONE_LABEL}`;
+  `${describeDate(b.date).full}, ${timeLabel(b.time)} ${BOOKING_TIME_ZONE_LABEL}`;
 
 /** The moment the 15-minute hold ends, in Pakistan time, e.g. "3:42 PM". */
 function deadlineText(b: Booking) {
@@ -86,7 +86,7 @@ export async function sendAdvisorRequest(b: Booking) {
   await send({
     to: advisorAddress(),
     replyTo: b.email,
-    subject: `New slot reserved — ${describeDate(b.date).full}`,
+    subject: `New slot reserved — ${describeDate(b.date).full}, ${timeLabel(b.time)}`,
     html: layout(
       "A student reserved a slot",
       `${detailRows(b)}
@@ -108,7 +108,7 @@ export async function sendStudentPaymentInstructions(b: Booking) {
   const ref = paymentReference(b.id);
   await send({
     to: b.email,
-    subject: `Pay within ${PENDING_HOLD_MINUTES} minutes to keep your slot — ${describeDate(b.date).full}`,
+    subject: `Pay within ${PENDING_HOLD_MINUTES} minutes to keep your slot — ${describeDate(b.date).full}, ${timeLabel(b.time)}`,
     html: layout(
       `Thanks ${escapeHtml(b.name)} — your slot is reserved`,
       `<table style="border-collapse:collapse;font-size:14px">${sessionRows(b)}</table>

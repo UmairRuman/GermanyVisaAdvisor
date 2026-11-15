@@ -1,4 +1,4 @@
-import { PENDING_HOLD_MINUTES, adminDates, paymentReference } from "@/lib/booking";
+import { BOOKING_TIMES, PENDING_HOLD_MINUTES, adminDates, paymentReference } from "@/lib/booking";
 import { isAdmin } from "@/lib/server/admin-auth";
 import { BLOCKED_MARKER, listBookings, slotHolders, type Booking } from "@/lib/server/booking-store";
 
@@ -11,12 +11,14 @@ export type AdminBooking = Booking & {
   expiresAt: string;
 };
 
-export type AdminDay = {
-  date: string;
+export type AdminSlot = {
+  time: string;
   state: "free" | "blocked" | "held" | "confirmed";
   bookingId?: string;
   name?: string;
 };
+
+export type AdminDay = { date: string; slots: AdminSlot[] };
 
 export async function GET(request: Request) {
   if (!isAdmin(request)) return Response.json({ error: "Not signed in" }, { status: 401 });
@@ -32,17 +34,16 @@ export async function GET(request: Request) {
   });
   const byId = new Map(decorated.map((b) => [b.id, b]));
 
-  const days: AdminDay[] = Object.entries(holders).map(([date, holder]) => {
-    if (!holder) return { date, state: "free" };
-    if (holder === BLOCKED_MARKER) return { date, state: "blocked" };
-    const booking = byId.get(holder);
-    return {
-      date,
-      state: booking?.status === "confirmed" ? "confirmed" : "held",
-      bookingId: holder,
-      name: booking?.name,
-    };
-  });
+  const days: AdminDay[] = Object.entries(holders).map(([date, byTime]) => ({
+    date,
+    slots: BOOKING_TIMES.map((time): AdminSlot => {
+      const holder = byTime[time];
+      if (!holder) return { time, state: "free" };
+      if (holder === BLOCKED_MARKER) return { time, state: "blocked" };
+      const booking = byId.get(holder);
+      return { time, state: booking?.status === "confirmed" ? "confirmed" : "held", bookingId: holder, name: booking?.name };
+    }),
+  }));
 
   return Response.json({ bookings: decorated, days });
 }

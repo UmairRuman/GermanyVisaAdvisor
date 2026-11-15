@@ -1,14 +1,14 @@
 import { z } from "zod";
-import { adminDates } from "@/lib/booking";
+import { BOOKING_TIMES, adminDates } from "@/lib/booking";
 import { isAdmin } from "@/lib/server/admin-auth";
-import { blockDate, cancelBooking, confirmBooking, getBooking, unblockDate } from "@/lib/server/booking-store";
+import { blockSlot, cancelBooking, confirmBooking, getBooking, unblockSlot } from "@/lib/server/booking-store";
 import { sendStudentCancelled, sendStudentConfirmed } from "@/lib/server/booking-mail";
 
 const schema = z.discriminatedUnion("action", [
   z.object({ action: z.literal("confirm"), id: z.string().min(8).max(64) }),
   z.object({ action: z.literal("cancel"), id: z.string().min(8).max(64) }),
-  z.object({ action: z.literal("block"), date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/) }),
-  z.object({ action: z.literal("unblock"), date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/) }),
+  z.object({ action: z.literal("block"), date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), time: z.enum(BOOKING_TIMES) }),
+  z.object({ action: z.literal("unblock"), date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), time: z.enum(BOOKING_TIMES) }),
 ]);
 
 const fail = (error: string, status = 400) => Response.json({ error }, { status });
@@ -26,9 +26,9 @@ export async function POST(request: Request) {
   if (input.action === "block" || input.action === "unblock") {
     if (!adminDates().includes(input.date)) return fail("That day is outside the manageable range.");
     if (input.action === "block") {
-      return (await blockDate(input.date)) ? Response.json({ ok: true }) : fail("That day is already held, booked or blocked.", 409);
+      return (await blockSlot(input.date, input.time)) ? Response.json({ ok: true }) : fail("That time is already held, booked or blocked.", 409);
     }
-    return (await unblockDate(input.date)) ? Response.json({ ok: true }) : fail("That day is not blocked.", 409);
+    return (await unblockSlot(input.date, input.time)) ? Response.json({ ok: true }) : fail("That time is not blocked.", 409);
   }
 
   const booking = await getBooking(input.id);

@@ -14,13 +14,14 @@ import { cn } from "@/lib/cn";
 import { DEFAULT_PKR_PER_EUR } from "@/lib/data/tools";
 import {
   BOOKING_LEAD_DAYS,
-  BOOKING_TIME_LABEL,
+  timeLabel,
   BOOKING_TIME_ZONE_LABEL,
   CONSULTATION_FEE_EUR,
   describeDate,
 } from "@/lib/booking";
 
-type Day = { date: string; available: boolean };
+type Slot = { time: string; label: string; available: boolean };
+type Day = { date: string; available: boolean; slots: Slot[] };
 
 const QUALIFICATIONS = ["Matric", "Intermediate", "Bachelor", "Master", "Other"];
 const DEGREES = ["Bachelor", "Master", "PhD"];
@@ -65,16 +66,13 @@ const INITIAL_FORM: FormState = {
 
 const inputClass = cn(fieldInputClass, "border-paper/15 bg-paper/10 text-paper placeholder:text-paper/35");
 
-// TODO: client to supply a real advisor photo — this silhouette is a stand-in.
 function AdvisorBadge() {
   return (
     <div className="flex items-center gap-3">
       <div className="relative h-14 w-14 shrink-0">
-        <div className="flex h-full w-full items-end justify-center overflow-hidden rounded-full bg-gradient-to-b from-[#d9cdb8] to-[#b9a98c] ring-2 ring-paper/20">
-          <svg viewBox="0 0 48 56" className="h-full w-full text-charcoal/40" fill="currentColor" aria-hidden>
-            <circle cx="24" cy="21" r="9" />
-            <path d="M6 56c0-12 8-19 18-19s18 7 18 19z" />
-          </svg>
+        <div className="h-full w-full overflow-hidden rounded-full ring-2 ring-paper/20">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/advisor.jpg" alt="Mr. Shahid Ali, your advisor" className="h-full w-full object-cover" />
         </div>
         <span className="absolute bottom-0 right-0 flex h-4 w-4" aria-hidden>
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#1fae54]/60" />
@@ -82,7 +80,7 @@ function AdvisorBadge() {
         </span>
       </div>
       <div>
-        <p className="text-sm font-bold text-paper">Your advisor</p>
+        <p className="text-sm font-bold text-paper">Mr. Shahid Ali</p>
         <p className="flex items-center gap-1.5 text-xs font-semibold text-[#5fd68a]">
           <span className="h-1.5 w-1.5 rounded-full bg-[#1fae54]" /> Available for bookings
         </p>
@@ -96,6 +94,7 @@ export function BookCall() {
   const [days, setDays] = useState<Day[] | null>(null);
   const [loadFailed, setLoadFailed] = useState(false);
   const [date, setDate] = useState<string | null>(null);
+  const [time, setTime] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(INITIAL_FORM);
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle");
   const [error, setError] = useState<string | null>(null);
@@ -128,7 +127,9 @@ export function BookCall() {
   }, []);
 
   const firstFree = days?.find((d) => d.available);
-  const chosen = days?.find((d) => d.date === date && d.available);
+  const chosenDay = days?.find((d) => d.date === date && d.available);
+  const chosenSlot = chosenDay?.slots.find((slot) => slot.time === time && slot.available);
+  const chosen = chosenDay && chosenSlot ? chosenDay : undefined;
   const emailOk = /^S+@S+.S+$/.test(form.email.trim());
   const ready =
     Boolean(chosen) &&
@@ -155,7 +156,7 @@ export function BookCall() {
       const response = await fetch("/api/booking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, intake: [form.intakeSeason, form.intakeYear.trim()].filter(Boolean).join(" "), date: chosen.date }),
+        body: JSON.stringify({ ...form, intake: [form.intakeSeason, form.intakeYear.trim()].filter(Boolean).join(" "), date: chosen.date, time }),
       });
       if (response.ok) {
         setStatus("done");
@@ -165,6 +166,7 @@ export function BookCall() {
       setError(data.error ?? "Something went wrong. Please try again.");
       if (response.status === 409) {
         setDate(null);
+        setTime(null);
         void loadDays(); // someone else took the day — show the fresh list
       }
     } catch {
@@ -250,7 +252,10 @@ export function BookCall() {
                                 role="radio"
                                 aria-checked={active}
                                 disabled={!day.available}
-                                onClick={() => setDate(day.date)}
+                                onClick={() => {
+                                  setDate(day.date);
+                                  setTime(null);
+                                }}
                                 className={cn(
                                   "relative w-16 shrink-0 snap-start rounded-2xl border px-2 py-3 text-center transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] sm:w-auto",
                                   active
@@ -287,9 +292,35 @@ export function BookCall() {
                     <p className="mt-6 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-paper/50">
                       2 · Time <Clock size={12} />
                     </p>
-                    <p className="mt-3 inline-flex rounded-full border border-gold bg-gold/10 px-4 py-2 text-sm font-bold text-paper">
-                      {BOOKING_TIME_LABEL} · {BOOKING_TIME_ZONE_LABEL}
-                    </p>
+                    {chosenDay ? (
+                      <div className="mt-3 flex flex-wrap gap-2" role="radiogroup" aria-label="Time">
+                        {chosenDay.slots.map((slot) => {
+                          const active = time === slot.time;
+                          return (
+                            <button
+                              key={slot.time}
+                              type="button"
+                              role="radio"
+                              aria-checked={active}
+                              disabled={!slot.available}
+                              onClick={() => setTime(slot.time)}
+                              className={cn(
+                                "rounded-full border px-4 py-2.5 text-sm font-bold transition-all duration-300",
+                                active
+                                  ? "border-gold bg-gold text-charcoal shadow-[0_10px_22px_-10px_rgba(185,138,46,0.7)]"
+                                  : "border-paper/20 text-paper hover:border-paper/50",
+                                !slot.available && "cursor-not-allowed line-through opacity-35 hover:border-paper/20",
+                              )}
+                            >
+                              {slot.label}
+                            </button>
+                          );
+                        })}
+                        <span className="basis-full text-xs text-paper/50">All times are {BOOKING_TIME_ZONE_LABEL}.</span>
+                      </div>
+                    ) : (
+                      <p className="mt-3 text-sm text-paper/50">Pick a day first to see the available times ({BOOKING_TIME_ZONE_LABEL}).</p>
+                    )}
 
                     <p className="mt-6 text-xs font-bold uppercase tracking-wide text-paper/50">3 · Your details</p>
                     <div className="mt-3 grid gap-3 sm:grid-cols-2">
@@ -326,7 +357,7 @@ export function BookCall() {
                           className="mt-4 overflow-hidden text-sm text-paper/70"
                         >
                           You&rsquo;re reserving <strong className="text-paper">{describeDate(chosen.date).full}</strong> at{" "}
-                          <strong className="text-paper">{BOOKING_TIME_LABEL}</strong> for{" "}
+                          <strong className="text-paper">{timeLabel(time ?? "")} {BOOKING_TIME_ZONE_LABEL}</strong> for{" "}
                           <strong className="text-paper">€{CONSULTATION_FEE_EUR}</strong>.
                         </motion.p>
                       )}

@@ -1,11 +1,12 @@
 import { Redis } from "@upstash/redis";
-import { PENDING_HOLD_MINUTES } from "@/lib/booking";
+import { BOOKING_TIMES, DEFAULT_BOOKING_TIME, PENDING_HOLD_MINUTES } from "@/lib/booking";
 
 export type BookingStatus = "pending" | "confirmed" | "cancelled";
 
 export type Booking = {
   id: string;
   date: string; // YYYY-MM-DD, Pakistan time
+  time: string; // "HH:MM", Pakistan time
   name: string;
   email: string;
   phone: string;
@@ -72,25 +73,28 @@ async function remove(key: string) {
   else memory.delete(key);
 }
 
-const slotKey = (date: string) => `slot:${date}`;
+const slotKey = (date: string, time: string) => `slot:${date}:${time}`;
 const bookingKey = (id: string) => `booking:${id}`;
 const INDEX_KEY = "bookings:index";
 
-/** Dates (from `dates`) that are currently held, confirmed or blocked by the admin. */
-export async function takenDates(dates: string[]): Promise<string[]> {
-  const holders = await Promise.all(dates.map((d) => get(slotKey(d))));
-  return dates.filter((_, i) => holders[i] !== null);
+/** Who holds each date/time: a booking id, "blocked", or null when free. */
+export async function slotHolders(dates: string[]): Promise<Record<string, Record<string, string | null>>> {
+  const pairs = dates.flatMap((d) => BOOKING_TIMES.map((t) => [d, t] as const));
+  const keys = pairs.map(([d, t]) => slotKey(d, t));
+  // One round trip for all slots instead of one request each.
+  const holders: (string | null)[] = redis
+    ? (await redis.mget<unknown[]>(...keys)).map((v) => (v === null || v === undefined ? null : String(v)))
+    : await Promise.all(keys.map((k) => get(k)));
+  const result: Record<string, Record<string, string | null>> = {};
+  pairs.forEach(([d, t], i) => {
+    (result[d] ??= {})[t] = holders[i];
+  });
+  return result;
 }
 
-/** Who holds each date: a booking id, "blocked", or null when free. */
-export async function slotHolders(dates: string[]): Promise<Record<string, string | null>> {
-  const holders = await Promise.all(dates.map((d) => get(slotKey(d))));
-  return Object.fromEntries(dates.map((d, i) => [d, holders[i]]));
-}
-
-/** Atomically reserves the day for 15 minutes. Returns false if someone else already holds it. */
+/** Atomically reserves the slot for 15 minutes. Returns false if someone else already holds it. */
 export async function holdSlot(booking: Booking): Promise<boolean> {
-  const won = await set(slotKey(booking.date), booking.id, HOLD_SECONDS, true);
+  const won = await set(slotKey(booking.date, booking.time), booking.id, HOLD_SECONDS, true);
   if (!won) return false;
   await set(bookingKey(booking.id), JSON.stringify(booking), KEEP_SECONDS);
   if (redis) {
@@ -104,7 +108,9 @@ export async function holdSlot(booking: Booking): Promise<boolean> {
 
 export async function getBooking(id: string): Promise<Booking | null> {
   const raw = await get(bookingKey(id));
-  return raw ? (JSON.parse(raw) as Booking) : null;
+  if (!raw) return null;
+  const booking = JSON.parse(raw) as Booking;
+  return { ...booking, time: booking.time ?? DEFAULT_BOOKING_TIME };
 }
 
 /** Newest first. */
@@ -126,11 +132,11 @@ export type ConfirmResult = { ok: true; booking: Booking } | { ok: false; reason
  */
 export async function confirmBooking(booking: Booking): Promise<ConfirmResult> {
   if (booking.status === "cancelled") return { ok: false, reason: "cancelled" };
-  const holder = await get(slotKey(booking.date));
+  const holder = await get(slotKey(booking.date, booking.time));
   if (holder === booking.id) {
-    await set(slotKey(booking.date), booking.id, KEEP_SECONDS);
+    await set(slotKey(booking.date, booking.time), booking.id, KEEP_SECONDS);
   } else if (holder === null) {
-    if (!(await set(slotKey(booking.date), booking.id, KEEP_SECONDS, true))) return { ok: false, reason: "taken" };
+    if (!(await set(slotKey(booking.date, booking.time), booking.id, KEEP_SECONDS, true))) return { ok: false, reason: "taken" };
   } else {
     return { ok: false, reason: "taken" };
   }
@@ -142,18 +148,18 @@ export async function confirmBooking(booking: Booking): Promise<ConfirmResult> {
 export async function cancelBooking(booking: Booking): Promise<Booking> {
   const updated: Booking = { ...booking, status: "cancelled" };
   await save(updated);
-  if ((await get(slotKey(booking.date))) === booking.id) await remove(slotKey(booking.date));
+  if ((await get(slotKey(booking.date, booking.time))) === booking.id) await remove(slotKey(booking.date, booking.time));
   return updated;
 }
 
-/** Admin closes a free day. Fails if the day is already held or blocked. */
-export async function blockDate(date: string): Promise<boolean> {
-  return set(slotKey(date), BLOCKED, null, true);
+/** Admin closes a free slot. Fails if it is already held or blocked. */
+export async function blockSlot(date: string, time: string): Promise<boolean> {
+  return set(slotKey(date, time), BLOCKED, null, true);
 }
 
-export async function unblockDate(date: string): Promise<boolean> {
-  if ((await get(slotKey(date))) !== BLOCKED) return false;
-  await remove(slotKey(date));
+export async function unblockSlot(date: string, time: string): Promise<boolean> {
+  if ((await get(slotKey(date, time))) !== BLOCKED) return false;
+  await remove(slotKey(date, time));
   return true;
 }
 

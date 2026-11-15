@@ -2,7 +2,25 @@
 // Everything is computed in Pakistan time (UTC+5, no daylight saving) so the server and the
 // visitor's browser can never disagree about which day is "today".
 
-export const BOOKING_TIME_LABEL = "12:00 PM";
+/**
+ * The times a student can pick on a bookable day (Pakistan time, 24h "HH:MM"). Edit this list to
+ * change the slots; each one is booked, held and blocked separately.
+ */
+export const BOOKING_TIMES = [
+  "12:00", "13:00", "14:00", "15:00", "16:00", "17:00",
+  "18:00", "19:00", "20:00", "21:00", "22:00", "23:00",
+] as const;
+export type BookingTime = (typeof BOOKING_TIMES)[number];
+export const DEFAULT_BOOKING_TIME: BookingTime = "12:00";
+
+export const isBookingTime = (value: string): value is BookingTime =>
+  (BOOKING_TIMES as readonly string[]).includes(value);
+
+/** "13:00" -> "1:00 PM". */
+export function timeLabel(time: string): string {
+  const [h, m] = time.split(":").map(Number);
+  return `${((h + 11) % 12) + 1}:${String(m).padStart(2, "0")} ${h >= 12 ? "PM" : "AM"}`;
+}
 export const BOOKING_TIME_ZONE_LABEL = "Pakistan time";
 /** The earliest bookable day is this many days after today, e.g. book on the 23rd → 25th. */
 export const BOOKING_LEAD_DAYS = 2;

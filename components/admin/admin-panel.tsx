@@ -20,8 +20,8 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
-import { BOOKING_TIME_LABEL, BOOKING_TIME_ZONE_LABEL, CONSULTATION_FEE_EUR, describeDate } from "@/lib/booking";
-import type { AdminBooking, AdminDay } from "@/app/api/admin/bookings/route";
+import { BOOKING_TIME_ZONE_LABEL, CONSULTATION_FEE_EUR, describeDate, timeLabel } from "@/lib/booking";
+import type { AdminBooking, AdminDay, AdminSlot } from "@/app/api/admin/bookings/route";
 
 type Data = { bookings: AdminBooking[]; days: AdminDay[] };
 type Display = AdminBooking["display"];
@@ -206,7 +206,7 @@ function BookingCard({
             </div>
             <p className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-ink-muted">
               <span className="inline-flex items-center gap-1.5 font-semibold text-ink">
-                <CalendarCheck size={14} className="text-gold" /> {info.weekday}, {info.day} {info.month} · {BOOKING_TIME_LABEL}
+                <CalendarCheck size={14} className="text-gold" /> {info.weekday}, {info.day} {info.month} · {timeLabel(booking.time)}
               </span>
               <span>€{CONSULTATION_FEE_EUR}</span>
               <span className="rounded-md bg-ink/[0.06] px-2 py-0.5 font-mono text-xs font-bold text-ink">{booking.reference}</span>
@@ -274,7 +274,7 @@ function BookingCard({
   );
 }
 
-const DAY_STYLE: Record<AdminDay["state"], { label: string; tile: string; text: string }> = {
+const DAY_STYLE: Record<AdminSlot["state"], { label: string; tile: string; text: string }> = {
   free: { label: "Free", tile: "border-[#1fae54]/30 bg-[#1fae54]/8 hover:border-[#1fae54]", text: "text-[#157a3b]" },
   held: { label: "Held", tile: "border-gold/40 bg-gold/10", text: "text-[#8a6212]" },
   confirmed: { label: "Booked", tile: "border-brick/30 bg-brick/8", text: "text-brick" },
@@ -290,6 +290,7 @@ export function AdminPanel() {
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
   const [now, setNow] = useState(() => Date.now());
+  const [pickedDate, setPickedDate] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const response = await fetch("/api/admin/bookings", { cache: "no-store" }).catch(() => null);
@@ -347,7 +348,7 @@ export function AdminPanel() {
       confirmed: count("confirmed"),
       expired: count("expired"),
       cancelled: count("cancelled"),
-      free: (data?.days ?? []).filter((d) => d.state === "free").length,
+      free: (data?.days ?? []).reduce((n, d) => n + d.slots.filter((slot) => slot.state === "free").length, 0),
     };
   }, [data]);
 
@@ -402,7 +403,7 @@ export function AdminPanel() {
           <div>
             <h1 className="font-display text-3xl font-semibold text-ink">Bookings</h1>
             <p className="mt-1 text-sm text-ink-muted">
-              Sessions at {BOOKING_TIME_LABEL} {BOOKING_TIME_ZONE_LABEL} · updates every 30 seconds
+              All times in {BOOKING_TIME_ZONE_LABEL} · updates every 30 seconds
             </p>
           </div>
         </div>
@@ -411,7 +412,7 @@ export function AdminPanel() {
           <StatCard icon={Clock} label="Awaiting payment" value={counts.awaiting} tone="bg-gold/15 text-[#8a6212]" active={tab === "bookings" && filter === "awaiting-payment"} onClick={() => { setTab("bookings"); setFilter("awaiting-payment"); }} />
           <StatCard icon={CheckCircle2} label="Confirmed" value={counts.confirmed} tone="bg-[#1fae54]/12 text-[#157a3b]" active={tab === "bookings" && filter === "confirmed"} onClick={() => { setTab("bookings"); setFilter("confirmed"); }} />
           <StatCard icon={CalendarX2} label="Expired holds" value={counts.expired} tone="bg-ink/8 text-ink-muted" active={tab === "bookings" && filter === "expired"} onClick={() => { setTab("bookings"); setFilter("expired"); }} />
-          <StatCard icon={CalendarCheck} label="Free days (next 30)" value={counts.free} tone="bg-brick/10 text-brick" active={tab === "slots"} onClick={() => setTab("slots")} />
+          <StatCard icon={CalendarCheck} label="Free slots (next 30 days)" value={counts.free} tone="bg-brick/10 text-brick" active={tab === "slots"} onClick={() => setTab("slots")} />
         </div>
 
         <div role="tablist" className="mt-8 inline-flex rounded-full border border-line bg-paper-raised p-1">
@@ -485,50 +486,88 @@ export function AdminPanel() {
           <section className="mt-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="max-w-xl text-sm text-ink-muted">
-                Tap a free day to block it when the advisor is away, and tap a blocked day to open it again. Held and
-                booked days are released by cancelling the booking.
+                Choose a day, then tap a time to block it when the advisor is away. Tap a blocked time to open it
+                again. Held and booked times are released by cancelling the booking.
               </p>
               <div className="flex flex-wrap gap-3 text-xs font-semibold text-ink-muted">
-                {(Object.keys(DAY_STYLE) as AdminDay["state"][]).map((s) => (
-                  <span key={s} className="inline-flex items-center gap-1.5">
-                    <span className={cn("h-2.5 w-2.5 rounded-full border", DAY_STYLE[s].tile)} /> {DAY_STYLE[s].label}
+                {(Object.keys(DAY_STYLE) as AdminSlot["state"][]).map((st) => (
+                  <span key={st} className="inline-flex items-center gap-1.5">
+                    <span className={cn("h-2.5 w-2.5 rounded-full border", DAY_STYLE[st].tile)} /> {DAY_STYLE[st].label}
                   </span>
                 ))}
               </div>
             </div>
-            <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            <div className="mt-5 grid grid-cols-3 gap-3 sm:grid-cols-5 lg:grid-cols-6">
               {(data?.days ?? []).map((day) => {
                 const info = describeDate(day.date);
-                const style = DAY_STYLE[day.state];
-                const toggleable = day.state === "free" || day.state === "blocked";
+                const free = day.slots.filter((slot) => slot.state === "free").length;
+                const open = (pickedDate ?? data?.days[0]?.date) === day.date;
                 return (
                   <button
                     key={day.date}
                     type="button"
-                    disabled={!toggleable || busyKey !== null}
-                    onClick={() => void act(`d-${day.date}`, { action: day.state === "free" ? "block" : "unblock", date: day.date })}
+                    onClick={() => setPickedDate(day.date)}
+                    aria-pressed={open}
                     className={cn(
-                      "rounded-2xl border p-4 text-left transition-all disabled:cursor-default",
-                      style.tile,
-                      toggleable && "hover:-translate-y-0.5",
+                      "rounded-2xl border p-3 text-left transition-all hover:-translate-y-0.5",
+                      open ? "border-ink bg-paper-raised shadow-[0_14px_30px_-18px_rgba(26,22,19,0.4)]" : "border-line bg-paper-raised",
                     )}
                   >
                     <span className="block text-[11px] font-bold uppercase tracking-wider text-ink-muted">{info.weekday}</span>
-                    <span className="block font-display text-3xl font-semibold leading-tight text-ink">{info.day}</span>
+                    <span className="block font-display text-2xl font-semibold leading-tight text-ink">{info.day}</span>
                     <span className="block text-xs text-ink-muted">{info.month}</span>
-                    <span className={cn("mt-2 block truncate text-xs font-bold", style.text)}>
-                      {style.label}
-                      {day.name ? ` · ${day.name}` : ""}
+                    <span className={cn("mt-1.5 block text-[11px] font-bold", free === 0 ? "text-brick" : "text-[#157a3b]")}>
+                      {free}/{day.slots.length} free
                     </span>
-                    {toggleable && (
-                      <span className="mt-1 block text-[11px] font-semibold text-ink-muted/80">
-                        {day.state === "free" ? "Tap to block" : "Tap to open"}
-                      </span>
-                    )}
                   </button>
                 );
               })}
             </div>
+            {(() => {
+              const day = (data?.days ?? []).find((d) => d.date === (pickedDate ?? data?.days[0]?.date));
+              if (!day) return null;
+              return (
+                <div className="mt-6 rounded-2xl border border-line bg-paper-raised p-5">
+                  <h2 className="font-display text-lg font-semibold text-ink">{describeDate(day.date).full}</h2>
+                  <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    {day.slots.map((slot) => {
+                      const style = DAY_STYLE[slot.state];
+                      const toggleable = slot.state === "free" || slot.state === "blocked";
+                      return (
+                        <button
+                          key={slot.time}
+                          type="button"
+                          disabled={!toggleable || busyKey !== null}
+                          onClick={() =>
+                            void act(`d-${day.date}-${slot.time}`, {
+                              action: slot.state === "free" ? "block" : "unblock",
+                              date: day.date,
+                              time: slot.time,
+                            })
+                          }
+                          className={cn(
+                            "rounded-2xl border p-4 text-left transition-all disabled:cursor-default",
+                            style.tile,
+                            toggleable && "hover:-translate-y-0.5",
+                          )}
+                        >
+                          <span className="block font-display text-xl font-semibold text-ink">{timeLabel(slot.time)}</span>
+                          <span className={cn("mt-1 block truncate text-xs font-bold", style.text)}>
+                            {style.label}
+                            {slot.name ? ` · ${slot.name}` : ""}
+                          </span>
+                          {toggleable && (
+                            <span className="mt-1 block text-[11px] font-semibold text-ink-muted/80">
+                              {slot.state === "free" ? "Tap to block" : "Tap to open"}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
           </section>
         )}
       </main>
