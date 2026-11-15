@@ -130,7 +130,7 @@ export function BookCall() {
   const chosenDay = days?.find((d) => d.date === date && d.available);
   const chosenSlot = chosenDay?.slots.find((slot) => slot.time === time && slot.available);
   const chosen = chosenDay && chosenSlot ? chosenDay : undefined;
-  const emailOk = /^S+@S+.S+$/.test(form.email.trim());
+  const emailOk = /^\S+@\S+\.\S+$/.test(form.email.trim());
   const ready =
     Boolean(chosen) &&
     form.name.trim().length >= 2 &&
